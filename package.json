@@ -1,0 +1,39 @@
+{
+  "name": "aquarium-controller",
+  "description": "Controller for Pi to handle aquarium tasks.",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test-integration": "casperjs test ./test/integration/test.*.js",
+    "test-integration-runner": "NODE_ENV=test node casper-runner.js",
+    "test": "npm run lint && npm run test-unit && npm run test-integration-runner",
+    "test-unit": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit",
+    "lint": "eslint .",
+    "autofix": "eslint --fix .",
+    "codecov": "npm run test && (codecov || true)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://roryelsa@bitbucket.org/roryelsa/elsanfb.git"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "net": "^1.0.2",
+    "node-env-file": "^0.1.8",
+    "request": "^2.83.0",
+    "socket.io": "^2.0.3",
+    "winston": "^2.3.1",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.8.0"
+  },
+  "engines": {
+    "node": ">= 6.9.x",
+    "npm": "> 3.10.x"
+  }
+}
