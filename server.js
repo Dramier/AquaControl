@@ -2,7 +2,7 @@
  *
  *  Aquarium Controller for Raspberry Pi
  *
- *  Version: 1.0
+ *  Version: 1.00
  *  3/13/2018 6:00am
  */
 
