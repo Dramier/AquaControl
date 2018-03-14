@@ -58,7 +58,7 @@
             <button type="button" class="btn btn-success" onclick="go_outlet_config1()">1</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-success">2</button>
+            <button type="button" class="btn btn-success" onclick="socket.emit('chat message', 'button 2 clicked');">2</button>
         </div>
         <div class="col">
             <button type="button" class="btn btn-success">3</button>
@@ -605,46 +605,46 @@
 
 <style>
 .screen_home {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 .outlet_status1 {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 .sensor_list {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 .outlet_config1 {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 .warnings_page {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 .config_main {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 .config_sensor1 {
-    margin: 0 20px 20px 0;
+    margin: 20px 20px 20px 20px;
     border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
+    padding: 5px 5px 5px 20px;
+    width: auto;
 }
 </style>
 
@@ -690,7 +690,10 @@
 </style>
 -->
 
-
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+</script>
 
 </body>
 </html>
