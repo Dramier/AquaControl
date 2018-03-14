@@ -8,15 +8,29 @@
 
 
 
+var express = require('express'); // app server
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+//io.path('/public');
+//io.serveClient(true);
+//io.attach(http);
+const path = require('path');
+
+var port = 3000; 
+
+//app.use(express.static('public'))
+//app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/public')))
+  
 
 app.get('/', function(req, res){
+  console.log('URL base: Incoming connection.');
   res.sendFile(__dirname + '/public/home.htm');
 });
 
 app.get('/pc', function(req, res){
+  console.log('URL pc: Incoming connection.');
   res.sendFile(__dirname + '/public/homepc.htm');
 });
 
@@ -35,8 +49,8 @@ io.on('disconnect', function(socket){
   console.log('a user disconnected');
 });
 
-
-
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(port, function(){
+  console.log('Aqua Control listening on: ' + port);
 });
+
+module.exports = app;

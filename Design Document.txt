@@ -1,0 +1,303 @@
+Temperature sensor:
+	Power: DC3.0V to 5.0V
+	Red: VDD+
+	Black: GND
+	Yellow: DATA
+	One 4.7k resistor between VDD+ and DATA
+	
+Pin #30 : Outlet: heater
+Pin #31 : Outlet: Lights 1 (led)
+Pin #32 : Outlet: Lights 2 (plant bulb)
+NOT USED: Pin #33 : Outlet: Lights 3 (spot)
+Pin #34 : Outlet: fertilizer dispenser
+Pin #35 : Outlet: filter
+Pin #37 : Outlet 1 LED
+Pin #38 : Outlet 2 LED
+Pin #39 : Outlet 3 LED
+Pin #40 : Outlet 4 LED
+Pin #41 : Outlet 5 LED
+NOT USED: Pin #42 : Outlet 6 LED
+Pin #43 : General Power LED
+Pin #44 : Maintenance Mode LED
+Pin #45 : Maintenance Mode Button
+Pin #46 : Sensor 1: temperature (3pin) DS18B20
+Pin #47 : Sensor 1:
+Pin #48 : Sensor 1:
+Pin #49 : Sensor 1:
+
+30-37
+31-38
+32-39
+34-40
+35-41
+
+
+Last wired relay needs to be backwards from the rest in order to have the filter run 24/7.
+Five relays total = five output LED's + one maintenance mode LED = SIX total LED's.
+
+Time to dispense 1 ml: 1000 ms or 1 second.
+
+Create a ground rail and run to all AC outlets and AC inlet.
+One leg of the AC outlet on a rail to AC inlet.
+Second leg of each outlet coming from relay board.
+Rail from AC inlet going to each relay board relay.
+
+
+
+Next steps:
+Demonstrate blinking LED
+Demonstrate temperature reading
+Demonstrate using relay to turn on and off light
+
+DONE - Design the website.
+Schedule gets sent from website.
+Schedule read by Arduino and saved internally.
+Manual control sent from website.
+Manual control read and used by Arduino.
+Make the manual ON/OFF switch interact with Arduino.
+Make the maint mode status LED interact.
+Send the maint mode flag to the website.
+Make the MM pushbutton toggle a physical LED.
+Make the MM pushbutton disable all other logic.
+Website passes trigger value to Arduino.
+Arduino receives trigger value and stores it.
+Pass the temperature to the website.
+Display the temperature on the website.
+Add the sensor trigger logic for outlets.
+Add the hourly logic for outlets.
+Add the disabled function to outlets.
+Have the device and sensor names output at the top of the boxes or stay in place on the input text field and remove the labels.
+
+Make a configuration page that allows for setting up each device.
+Make the MM pushbutton toggle the LED in the website.
+Make the MM pushbutton disable website changes.
+Save/load the state of the website or have the Arduino set it up correctly.
+Make sure website shows menu items that have been previously enabled.
+Add the sensor logging.
+Add the sensor-hourly logic for outlets.
+
+Make the C/F sensor toggle button function.
+Make the sensor logging toggle interact with Arduino.
+Setup a default config that can be loaded for a temperature sensor.
+Setup a warnings notification box.
+Setup a toggle for warnings on sensors with parameters.
+Setup a relay activation trigger that allows selection of daily, weekly, monthly.
+Add a hardware speaker for alarms.
+Add a warnings parameter for triggering the speaker.
+Make arduino able to track which outputs should be tied to maintmode shutoff
+Look at bootstrap for making a much cleaner UI with navigation panes like a phone homescreen type deal
+
+
+Parts list:
+1x Arduino Mega 2560 - $14
+1x Ethernet Shield - $12.98
+1x 8GB SD Card - $6.99
+1x 9V AC regulator - $5.99
+6x AC outlet - $7.44
+1x AC inlet with switch - $2.99
+1x Power cable - $6.74
+1x Water temperature sensor - $2.40
+1x 4.7k ohm resistor - $.03
+1x Peristaltic Pump - $4.00
+1x Airline tubing - $5.00
+1x 8 channel relay - $6.99
+8x 5mm LED's - $2.00
+1x pushbutton - $0.16
+4x sensor connectors - $16.00
+1x spool of wire - $4.50
+1x electrical connectors - $0.10
+1x heat shrink $0.30
+1x ethernet cable - $5.00
+1x 10k ohm resistor - $0.01
+Total so far: $103.62
+
+1x Acrylic sheets - 
+
+Possibles:
+1x resevoir tank - $26.88
+1x regulator AC to DC for Arduino - $7.65
+
+
+Used to load another page, might be really useful for sensors, etc:
+function load_home() {
+     document.getElementById("content").innerHTML='<object type="text/html" data="home.html" ></object>';
+}
+
+
+
+
+
+
+
+Bit value assigned to each outlet:
+Outlet 1: 1
+Outlet 2: 2
+Outlet 3: 4
+Outlet 4: 8
+Outlet 5: 16
+
+1,2 = 3
+1,3 = 5
+1,4 = 9
+1,5 = 17
+1,2,3 = 7
+1,2,3,4 = 15
+1,2,3,4,5 = 31
+1,2,4 = 11
+1,2,4,5 = 27
+So this works, through math can work out which sensors should be turned on using just one array for hourly schedule.
+
+
+
+
+27 - 16 = 11 so 5 is true
+11 - 8 = 3 so 4 is true
+can't subtract 3 so false on 3
+3 - 2 = 1 so 2 is true
+1 - 1 = 0 so 1 is true
+
+hourly schedule figuring out which relays to do:
+if (value - 16) >= 0 then 
+	5 = true
+	value = value - 16
+if (value - 8) >= 0 then
+	4 = true
+	value = value - 8
+if (value - 4) >= 0 then
+	3 = true
+	value = value - 4
+if (value - 2) >= 0 then
+	2 = true
+	value = value - 2
+if (value - 1) >= 0 then
+	1 = true
+	value = value - 1
+done
+
+
+
+
+
+
+
+
+Home Screen:
+	Tank temperature
+	Current status of each outlet
+	Maintenance Mode indicator
+	Current time (and date?)
+	Warnings notification
+	Sensors button
+	Config button
+	
+Notes:
+	Clicking on outlet icons goes to that outlet's config page
+	Clicking on warnings notification goes to warning page and allows clearing of warnings
+	Clicking on config button goes to main config page
+	Clicking on sensors button goes to sensor list page
+	
+Outlet status page:
+	Shows device name
+	Shows current status ON/OFF
+	Config button when clicked goes to scheduling setup
+	Toggle on/off button 
+
+Warnings notification page:
+	Shows list of warnings
+	Click on notification prompts a delete yes/no prompts
+	Clear all button
+	Home button
+	
+Main Config page:
+	Set Celsius/Fahrenheit for temp display
+	Turn on/off alarm speaker
+	Set date/time manually
+	Download sensor logging
+	Download website config
+	Reset button that resets entire setup with warning confirmation prompts
+	Displays current IP
+	Displays uptime
+	
+Outlet Config Page:
+	Display name
+	Four buttons displayed: Disabled, Manual, Hourly, Sensor.  Currently selected in color, others in grayscale
+	Selecting Hourly adds icon to click for scheduling menu
+	Selecting Sensor adds icon to click for sensor menu
+	
+Sensors List page:
+	Lists all sensors connected
+	Clicking on sensor goes to sensor config page
+	
+Sensor Config Page:
+	Display current sensor name
+	Display current reading
+	Toggle icon for disable/enabled
+	Minimum value entry
+	Maximum value entry
+	Low value warning
+	High value warning
+	Enable/disable warning notifications
+	Save/load config buttons
+	
+Outlet Config->Scheduling menu page:
+	How to set this up?
+	
+Outlet Config->Sensor Menu page:
+	Four buttons with each sensor listed as a 1,2,3,4 icon
+	Entry for value to turn on at
+	Entry for value to turn off at
+	Warning notification enable/disable
+	
+	
+	
+	
+
+
+New Menu ToDo:
+	Outlet control by sensor
+	Home screen:
+		Temperature display
+		Current date and time
+		Outlets color coded based on whether they are on or not
+		Labels on outlets?
+	Main Settings:
+		Display current time on Arduino
+		Display uptime
+		Sound button toggle
+		Set time function
+		DL Log function
+		DL Config function
+		Reset function
+	
+	Transmit settings to Arduino
+	Receive settings from Arduino
+	Receive inital setup from Arduino on first load
+	Test one outlet, one sensor, etc with actual Arduino running
+	When all bugs are eliminated, add one outlet
+	Re-test, when all bugs gone, then copy-paste all outlets and sensors
+	
+	
+
+
+
+Setup variables to hold current aquarium setup in NodeJS.
+Setup socket.connection to send those variables to the website.
+Setup website messages to allow changing those variables.
+Setup periodic saving of those variables.
+Setup first start loading of those variables.
+
+
+
+
+	
+	
+
+
+
+
+
+
+
+
+
+

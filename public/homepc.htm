@@ -8,9 +8,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
+<!-- <img class="img-responsive" src="/images/background1.jpg" alt="background1.jpg"> -->
 
 <!-- Screen Layouts -->
 
@@ -601,13 +603,22 @@
 
 <!-- Style Definitions -->
 
+
+
 <style>
+body {
+    background-image: url("images/background1.jpg");
+    background-color: #cccccc;
+    background-blend-mode: darken;
+    background-size: cover;
+}
 .screen_home {
     margin: auto;
     margin-top: 100px;
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 .outlet_status1 {
     margin: auto;
@@ -615,6 +626,7 @@
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 .sensor_list {
     margin: auto;
@@ -622,6 +634,7 @@
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 .outlet_config1 {
     margin: auto;
@@ -629,6 +642,7 @@
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 .warnings_page {
     margin: auto;
@@ -636,6 +650,7 @@
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 .config_main {
     margin: auto;
@@ -643,6 +658,7 @@
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 .config_sensor1 {
     margin: auto;
@@ -650,6 +666,7 @@
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
     width: 240px;
+    background-color: #cccccc;
 }
 </style>
 
@@ -695,7 +712,7 @@
 </style>
 -->
 
-<script src="/socket.io/socket.io.js"></script>
+
 <script>
   var socket = io();
 </script>

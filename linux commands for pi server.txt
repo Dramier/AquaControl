@@ -1,0 +1,20 @@
+sudo apt-get update
+sudo apt-get dist-upgrade
+
+
+
+
+wget https://nodejs.org/dist/v8.10.0/node-v8.10.0-linux-armv7l.tar.xz
+
+
+
+#!/bin/bash
+# Starts the server monitor
+sudo pm2 start server.js --name "AquaControl" --watch
+
+
+sudo git clone https://github.com/Dramier/AquaControl.git
+
+
+git reset --hard
+git pull
