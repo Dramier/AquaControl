@@ -280,11 +280,11 @@ New Menu ToDo:
 
 
 
-Setup variables to hold current aquarium setup in NodeJS.
+DONE - Setup variables to hold current aquarium setup in NodeJS.
 Setup socket.connection to send those variables to the website.
 Setup website messages to allow changing those variables.
 Setup periodic saving of those variables.
-Setup first start loading of those variables.
+DONE - Setup first start loading of those variables.
 
 
 
