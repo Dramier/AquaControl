@@ -281,10 +281,17 @@ New Menu ToDo:
 
 
 DONE - Setup variables to hold current aquarium setup in NodeJS.
-Setup socket.connection to send those variables to the website.
-Setup website messages to allow changing those variables.
-Setup periodic saving of those variables.
+DONE - Setup socket.connection to send those variables to the website.
+DONE - Setup website messages to allow changing those variables.
+DONE - Setup periodic saving of those variables.
 DONE - Setup first start loading of those variables.
+
+Setup warnings page and warnings button on home page.
+	Warnings are being put beneath the HOME button - fix this.
+	Warnings are not being added to the home page notification bar.
+	Make sure the server forces the browser to refresh when an event is sent.
+Complete the sensors page.
+Complete the settings page.
 
 
 

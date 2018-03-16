@@ -1,0 +1,26 @@
+document.getElementById("2hour0").checked = control.outlet[0].sched[0];
+document.getElementById("2hour1").checked = control.outlet[0].sched[1];
+            document.getElementById("2hour2").checked = control.outlet[0].sched[2];
+            document.getElementById("2hour3").checked = control.outlet[0].sched[3];
+            document.getElementById("2hour4").checked = control.outlet[0].sched[4];
+            document.getElementById("2hour5").checked = control.outlet[0].sched[5];
+            document.getElementById("2hour6").checked = control.outlet[0].sched[6];
+            document.getElementById("2hour7").checked = control.outlet[0].sched[7];
+            document.getElementById("2hour8").checked = control.outlet[0].sched[8];
+            document.getElementById("2hour9").checked = control.outlet[0].sched[9];
+            document.getElementById("2hour10").checked = control.outlet[0].sched[10];
+            document.getElementById("2hour11").checked = control.outlet[0].sched[11];
+            document.getElementById("2hour12").checked = control.outlet[0].sched[12];
+            document.getElementById("2hour13").checked = control.outlet[0].sched[13];
+            document.getElementById("2hour14").checked = control.outlet[0].sched[14];
+            document.getElementById("2hour15").checked = control.outlet[0].sched[15];
+            document.getElementById("2hour16").checked = control.outlet[0].sched[16];
+            document.getElementById("2hour17").checked = control.outlet[0].sched[17];
+            document.getElementById("2hour18").checked = control.outlet[0].sched[18];
+            document.getElementById("2hour19").checked = control.outlet[0].sched[19];
+            document.getElementById("2hour20").checked = control.outlet[0].sched[20];
+            document.getElementById("2hour21").checked = control.outlet[0].sched[21];
+            document.getElementById("2hour22").checked = control.outlet[0].sched[22];
+            document.getElementById("2hour23").checked = control.outlet[0].sched[23];
+            
+

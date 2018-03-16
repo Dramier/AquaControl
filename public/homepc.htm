@@ -10,9 +10,15 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 </head>
-<body>
+<body onload="JavaScript:AutoRefresh(5000);">
+    <!--<body>-->
 <script>
-    var socket = io();
+    //const socket = io();
+
+    const socket = io('localhost:3000', {
+			path: '/socket.io'
+		});
+
     var control = {"sound":0,"uptime":"2018-03-14T20:21:39.806Z","outlet":[{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 1","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 2","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 3","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 4","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 5","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 6","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}],"sensor":[{"name":"Success","data":0},{"name":"Sensor 2","data":0},{"name":"Sensor 3","data":0},{"name":"Sensor 4","data":0}]};
 </script>
 
@@ -22,21 +28,9 @@
 
 <!-- Warnings Screen -->
 <div class="warnings_page" id="warnings_page">
-        <div class="alert alert-danger alert-dismissable fade show">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            Temp is low!
-        </div>
-        <div class="alert alert-danger alert-dismissable fade show">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            Temp is high!
-        </div>
-        <div class="alert alert-danger alert-dismissable fade show">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            Heater failure!
-        </div>
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-info" onclick="go_home()">Home</button>
+                <button type="button" id="warnbutton" class="btn btn-info" onclick="go_home()">Home</button>
             </div>
         </div>
     </div>
@@ -151,7 +145,7 @@
     <br>
     <div class="row">
         <div class="col">
-            <button type="button" class="btn btn-warning">RESET</button>
+            <button type="button" class="btn btn-warning" onclick="reset_server()">RESET</button>
             <button type="button" class="btn btn-info" onclick="go_home()">Home</button>
         </div>
     </div>
@@ -503,6 +497,13 @@
         <label for="sensorname1">Sensor Name:</label>
         <input type="text" class="form-control" id="sensorname1">
     </div>
+    <div class="sensor_status1" id="sensor_status1">
+            <button type="button" class="btn btn-danger" id="sbutton1" onclick="toggle_sbutton1()">Power</button>
+        </div>
+    <div class="form-group">
+            <label for="sensorname1">Data Type:</label>
+            <input type="text" class="form-control" id="datatype1"> 
+        </div>
     <div class="form-group">
         <label for="lowtrigger1">Low Trigger:</label>
         <input type="text" class="form-control" id="lowtrigger1">
@@ -516,11 +517,16 @@
 
 <!-- Control Functions -->
 <script>
+        function reset_server()
+        {
+            socket.emit('reset', control);
+        }
         function submit_sensor_config1()
         {
             control.sensor[0].name = document.getElementById("sensorname1").value;
             control.sensor[0].lowtrigger = document.getElementById("lowtrigger1").value;
             control.sensor[0].hightrigger = document.getElementById("hightrigger1").value;
+            control.sensor[0].datatype = document.getElementById("datatype1").value;
             
             socket.emit('control update', control);
         }
@@ -769,6 +775,7 @@
             document.getElementById("sensorname1").value = control.sensor[0].name;
             document.getElementById("lowtrigger1").value = control.sensor[0].lowtrigger;
             document.getElementById("hightrigger1").value = control.sensor[0].hightrigger;
+            document.getElementById("datatype1").value = control.sensor[0].datatype;
             document.getElementById("screen_home").style.display = 'none';
             document.getElementById("config_sensor1").style.display='block';
         }
@@ -830,6 +837,26 @@
             control.outlet[1].name = document.getElementById("outletname2").value;
             socket.emit('control update', control);
             
+        }
+
+        function toggle_sbutton1()
+        {
+            var btnclassName = $('#sbutton1').attr('class');
+            if (btnclassName === "btn btn-success")
+            {
+                $("#sbutton1").removeClass("btn btn-success").addClass("btn btn-danger");
+                control.sensor[0].status = "enabled";
+                //control.outlet[0].name = document.getElementById("outletname1").value;
+                socket.emit('control update', control);
+
+            }
+            else
+            {
+                $("#sbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
+                control.sensor[0].status = "disabled";
+                //control.outlet[0].name = document.getElementById("outletname1").value;
+                socket.emit('control update', control);
+            }
         }
 
         function toggle_mbutton1()
@@ -1182,7 +1209,7 @@ body {
     socket.on('control update', function(msg)
     {
         control = msg;
-        console.log(msg);
+        //console.log(msg);
 
         if (control.outlet[0].state == 0)
         {
@@ -1243,6 +1270,46 @@ body {
         document.getElementById("sensor3").innerHTML = control.sensor[2].name + " : " + control.sensor[2].data;
         document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
         document.getElementById("tempreading").innerHTML = "Temperature: " + control.sensor[0].data + "°F";
+
+        for (var i = 0, len = control.warning.length; i < len; i++) 
+        {
+            var check = document.getElementById('warn' + control.warning[i].type);
+            
+            //figure out a way to add a counter to it
+            //if (check != null)
+                
+
+            if ((control.warning[i].type != 0) && (check == null))
+            {
+                //fuck
+                //<button type="button" class="close" data-dismiss="alert">&times;</button>
+                console.log('Warning rxd from server.');
+                console.log('Warning: ' + control.warning[i].text);
+                var output = document.getElementById("warnings_page");
+                var ele = document.createElement("div");
+                ele.setAttribute("class","alert alert-danger alert-dismissable fade show");
+                ele.setAttribute('id', 'warn' + control.warning[i].type);
+                var butt = document.createElement('a');
+                butt.setAttribute('href', '#');
+                butt.setAttribute('class', 'close');
+                //butt.setAttribute("button type", "button");
+                butt.setAttribute('data-dismiss', 'alert');
+                butt.setAttribute('aria-label','close');
+                butt.innerHTML = '&times;';
+                    
+                ele.innerHTML = control.warning[i].text;
+                ele.appendChild(butt);
+                
+                //output.appendChild(ele);
+                var parentDiv = document.getElementById("warnbutton").parentNode;
+                var warn = document.getElementById("warnbutton");
+                parentDiv.insertBefore(ele, warn);
+
+                //console.log(msg);
+            }
+        }
+
+        refresh_warns();
         
     });
 
@@ -1254,16 +1321,34 @@ body {
         document.getElementById("sensor3").innerHTML = control.sensor[2].name + " : " + control.sensor[2].data;
         document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
         document.getElementById("tempreading").innerHTML = "Temperature: " + control.sensor[0].data + "°F";
-        console.log(msg);
+        //console.log(msg);
     });
 
-    socket.on('warning update', function(msg)
+    socket.on('warning', function(msg)
     {
-        console.log(msg);
+        control = msg;
+            
+        refresh_warns();
+        //location.reload(true);
+
     });
 
 
 </script>
+
+<script type="text/JavaScript">
+    //<!--
+        function update()
+        {
+            socket.emit('update', 'fetch update requested from web');
+        }
+
+       function AutoRefresh( t ) 
+       {
+          setInterval(update, t);
+       }
+    //-->
+ </script>
 
 </body>
 </html>
