@@ -19,7 +19,7 @@
 			path: '/socket.io'
 		});
 
-    var control = {"sound":0,"uptime":"2018-03-14T20:21:39.806Z","outlet":[{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 1","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 2","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 3","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 4","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 5","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"manual","triggername":"none","state":0,"name":"Outlet 6","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}],"sensor":[{"name":"Success","data":0},{"name":"Sensor 2","data":0},{"name":"Sensor 3","data":0},{"name":"Sensor 4","data":0}]};
+    var control = {"sound":0,"uptime":"2018-03-14T20:21:39.806Z","outlet":[{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 1","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 2","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 3","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 4","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 5","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 6","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}],"sensor":[{"name":"Success","data":0},{"name":"Sensor 2","data":0},{"name":"Sensor 3","data":0},{"name":"Sensor 4","data":0}]};
 </script>
 
 <!-- <img class="img-responsive" src="/images/background1.jpg" alt="background1.jpg"> -->
@@ -163,19 +163,19 @@
         <input type="text" class="form-control" id="outletname1">
     </div>
     <div class="dropdown">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+        <button type="button" id="dbutton1" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             Control Type
         </button>
         <div class="dropdown-menu">
             <button class="dropdown-item" type="button" onclick="select_disabled1()">Disabled</a>
-            <button class="dropdown-item" type="button" onclick="select_manual1()">Manual</a>
+            <button class="dropdown-item" type="button" onclick="select_Manual1()">Manual</a>
             <button class="dropdown-item" type="button" onclick="select_hourly1()">Hourly</a>
             <button class="dropdown-item" type="button">Sensor</a>
         </div>
     </div>
     <br>
     <div class="manual_button1" id="manual_button1">
-        <button type="button" class="btn btn-danger" id="mbutton1" onclick="toggle_mbutton1()">Power</button>
+        <button type="button" class="btn btn-danger" id="mbutton1" onclick="toggle_mbutton1()">Disabled</button>
     </div>
     <div class="manual_disabled1" id="manual_disabled1">
         <div class="alert alert-danger">
@@ -324,7 +324,7 @@
             <input type="text" class="form-control" id="outletname2">
         </div>
         <div class="dropdown">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <button type="button" id="dbutton2" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                 Control Type
             </button>
             <div class="dropdown-menu">
@@ -336,7 +336,7 @@
         </div>
         <br>
         <div class="manual_button2" id="manual_button2">
-            <button type="button" class="btn btn-success" id="mbutton2" onclick="toggle_mbutton2()">Power</button>
+            <button type="button" class="btn btn-success" id="mbutton2" onclick="toggle_mbutton2()">Disabled</button>
         </div>
         <div class="manual_disabled2" id="manual_disabled2">
             <div class="alert alert-danger">
@@ -498,7 +498,7 @@
         <input type="text" class="form-control" id="sensorname1">
     </div>
     <div class="sensor_status1" id="sensor_status1">
-            <button type="button" class="btn btn-danger" id="sbutton1" onclick="toggle_sbutton1()">Power</button>
+            <button type="button" class="btn btn-danger" id="sbutton1" onclick="toggle_sbutton1()">Disabled</button>
         </div>
     <div class="form-group">
             <label for="sensorname1">Data Type:</label>
@@ -666,11 +666,11 @@
             document.getElementById("manual_hourly1").style.display = 'none';
             document.getElementById("manual_disabled1").style.display = 'none';
             document.getElementById("manual_button1").style.display = 'none';
-            if (control.outlet[0].trigger == "disabled")
+            if (control.outlet[0].trigger == "Disabled")
                 document.getElementById("manual_disabled1").style.display = 'block';
-            if (control.outlet[0].trigger == "manual")
+            if (control.outlet[0].trigger == "Manual")
                 document.getElementById("manual_button1").style.display = 'block';
-            if (control.outlet[0].trigger == "hourly")
+            if (control.outlet[0].trigger == "Hourly")
                 document.getElementById("manual_hourly1").style.display = 'block';
 
             if (control.outlet[0].state == 0)
@@ -681,6 +681,7 @@
             {
                 $("#mbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
             }
+            
             document.getElementById("outlet_config1_name").innerHTML = control.outlet[0].name;
 
             document.getElementById("1hour0").checked = control.outlet[0].sched[0];
@@ -717,11 +718,11 @@
             document.getElementById("manual_hourly2").style.display = 'none';
             document.getElementById("manual_disabled2").style.display = 'none';
             document.getElementById("manual_button2").style.display = 'none';
-            if (control.outlet[1].trigger == "disabled")
+            if (control.outlet[1].trigger == "Disabled")
                 document.getElementById("manual_disabled2").style.display = 'block';
-            if (control.outlet[1].trigger == "manual")
+            if (control.outlet[1].trigger == "Manual")
                 document.getElementById("manual_button2").style.display = 'block';
-            if (control.outlet[1].trigger == "hourly")
+            if (control.outlet[1].trigger == "Hourly")
                 document.getElementById("manual_hourly2").style.display = 'block';
 
             if (control.outlet[1].state == 0)
@@ -793,8 +794,8 @@
             document.getElementById("manual_hourly1").style.display = 'block';
             document.getElementById("manual_disabled1").style.display = 'none';
             document.getElementById("manual_button1").style.display = 'none';
-            document.getElementById("outlet1_control").textContent = "hourly";
-            control.outlet[0].trigger = "hourly";
+            //document.getElementById("outlet1_control").textContent = "hourly";
+            control.outlet[0].trigger = "Hourly";
             control.outlet[0].state = 0;
             control.outlet[0].name = document.getElementById("outletname1").value;
             socket.emit('control update', control);
@@ -806,8 +807,8 @@
             document.getElementById("manual_hourly2").style.display = 'block';
             document.getElementById("manual_disabled2").style.display = 'none';
             document.getElementById("manual_button2").style.display = 'none';
-            document.getElementById("outlet2_control").textContent = "hourly";
-            control.outlet[1].trigger = "hourly";
+            //document.getElementById("outlet2_control").textContent = "hourly";
+            control.outlet[1].trigger = "Hourly";
             control.outlet[1].state = 0;
             control.outlet[1].name = document.getElementById("outletname2").value;
             socket.emit('control update', control);
@@ -819,7 +820,7 @@
             document.getElementById("manual_hourly1").style.display = 'none';
             document.getElementById("manual_disabled1").style.display = 'none';
             document.getElementById("manual_button1").style.display = 'block';
-            control.outlet[0].trigger = "manual";
+            control.outlet[0].trigger = "Manual";
             control.outlet[0].state = 0;
             control.outlet[0].name = document.getElementById("outletname1").value;
             socket.emit('control update', control);
@@ -832,7 +833,7 @@
             document.getElementById("manual_hourly2").style.display = 'none';
             document.getElementById("manual_disabled2").style.display = 'none';
             document.getElementById("manual_button2").style.display = 'block';
-            control.outlet[1].trigger = "manual";
+            control.outlet[1].trigger = "Manual";
             control.outlet[1].state = 0;
             control.outlet[1].name = document.getElementById("outletname2").value;
             socket.emit('control update', control);
@@ -845,7 +846,8 @@
             if (btnclassName === "btn btn-success")
             {
                 $("#sbutton1").removeClass("btn btn-success").addClass("btn btn-danger");
-                control.sensor[0].status = "enabled";
+                document.getElementById("sbutton1").innerHTML = "Disabled";
+                control.sensor[0].status = "Disabled";
                 //control.outlet[0].name = document.getElementById("outletname1").value;
                 socket.emit('control update', control);
 
@@ -853,7 +855,8 @@
             else
             {
                 $("#sbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
-                control.sensor[0].status = "disabled";
+                control.sensor[0].status = "Enabled";
+                document.getElementById("sbutton1").innerHTML = "Enabled";
                 //control.outlet[0].name = document.getElementById("outletname1").value;
                 socket.emit('control update', control);
             }
@@ -865,6 +868,7 @@
             if (btnclassName === "btn btn-success")
             {
                 $("#mbutton1").removeClass("btn btn-success").addClass("btn btn-danger");
+                document.getElementById("mbutton1").innerHTML = "Disabled";
                 control.outlet[0].state = 0;
                 control.outlet[0].name = document.getElementById("outletname1").value;
                 socket.emit('control update', control);
@@ -873,6 +877,7 @@
             else
             {
                 $("#mbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
+                document.getElementById("mbutton1").innerHTML = "Enabled";
                 control.outlet[0].state = 1;
                 control.outlet[0].name = document.getElementById("outletname1").value;
                 socket.emit('control update', control);
@@ -885,6 +890,7 @@
             if (btnclassName === "btn btn-success")
             {
                 $("#mbutton2").removeClass("btn btn-success").addClass("btn btn-danger");
+                document.getElementById("mbutton2").innerHTML = "Disabled";
                 control.outlet[1].state = 0;
                 control.outlet[1].name = document.getElementById("outletname2").value;
                 socket.emit('control update', control);
@@ -893,6 +899,7 @@
             else
             {
                 $("#mbutton2").removeClass("btn btn-danger").addClass("btn btn-success");
+                document.getElementById("mbutton2").innerHTML = "Enabled";
                 control.outlet[1].state = 1;
                 control.outlet[1].name = document.getElementById("outletname2").value;
                 socket.emit('control update', control);
@@ -905,9 +912,9 @@
             document.getElementById("manual_hourly1").style.display = 'none';
             document.getElementById("manual_disabled1").style.display = 'block';
             document.getElementById("manual_button1").style.display = 'none';
-            //document.getElementById("outlet1_control").textContent = "disabled";
+            //document.getElementById("outlet1_control").textContent = "Disabled";
             //send disabled to Arduino
-            control.outlet[0].trigger = "disabled";
+            control.outlet[0].trigger = "Disabled";
             control.outlet[0].state = 0;
             control.outlet[0].name = document.getElementById("outletname1").value;
             socket.emit('control update', control);
@@ -919,9 +926,9 @@
             document.getElementById("manual_hourly2").style.display = 'none';
             document.getElementById("manual_disabled2").style.display = 'block';
             document.getElementById("manual_button2").style.display = 'none';
-            //document.getElementById("outlet2_control").textContent = "disabled";
+            //document.getElementById("outlet2_control").textContent = "Disabled";
             //send disabled to Arduino
-            control.outlet[1].trigger = "disabled";
+            control.outlet[1].trigger = "Disabled";
             control.outlet[1].state = 0;
             control.outlet[1].name = document.getElementById("outletname2").value;
             socket.emit('control update', control);
@@ -948,8 +955,8 @@
         function setup_outlets()
         {
             /*
-            if (document.getElementById("outlet1_control").textContent === "disabled")
-            //if (control.outlet[0].trigger = "disabled")
+            if (document.getElementById("outlet1_control").textContent === "Disabled")
+            //if (control.outlet[0].trigger = "Disabled")
             {
                 select_disabled1();                
             }
@@ -1265,11 +1272,15 @@ body {
             $("#status_outlet6").removeClass("btn btn-danger").addClass("btn btn-success");
         }
         document.getElementById("sensor1").innerHTML = control.sensor[0].name + " : " + control.sensor[0].data;
-        //document.getElementById("sensorname1").innerHTML = control.sensor[0].name + ": " + control.sensor[0].data;
         document.getElementById("sensor2").innerHTML = control.sensor[1].name + " : " + control.sensor[1].data;
         document.getElementById("sensor3").innerHTML = control.sensor[2].name + " : " + control.sensor[2].data;
         document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
         document.getElementById("tempreading").innerHTML = "Temperature: " + control.sensor[0].data + "°F";
+
+        console.log('dbutton1 innerhtml: ' + document.getElementById("dbutton1").innerHTML);
+        document.getElementById("dbutton1").innerHTML = control.outlet[0].trigger;
+        console.log('dbutton1: ' + control.outlet[0].trigger);
+        document.getElementById("dbutton2").innerHTML = control.outlet[1].trigger;
 
         for (var i = 0, len = control.warning.length; i < len; i++) 
         {

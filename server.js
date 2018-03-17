@@ -57,7 +57,7 @@ var control = {
   "outlet": 
   [ 
     {
-      "trigger": "manual",
+      "trigger": "Manual",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
@@ -65,7 +65,7 @@ var control = {
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-    "trigger": "manual",
+    "trigger": "Manual",
     "triggername" : "none",
     "triggersensor": 0,
     "state" : 0,
@@ -73,7 +73,7 @@ var control = {
     "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "manual",
+      "trigger": "Manual",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
@@ -81,7 +81,7 @@ var control = {
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "manual",
+      "trigger": "Manual",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
@@ -89,7 +89,7 @@ var control = {
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "manual",
+      "trigger": "Manual",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
@@ -97,7 +97,7 @@ var control = {
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "manual",
+      "trigger": "Manual",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
@@ -109,7 +109,7 @@ var control = {
   [
     {
       "name" : "Sensor 1",
-      "status": "disabled",
+      "status": "Disabled",
       "data" : 82,
       "datatype" : "Temperature",
       "lowtrigger" : 50,
@@ -117,7 +117,7 @@ var control = {
     },
     {
       "name" : "Sensor 2",
-      "status": "disabled",
+      "status": "Disabled",
       "data" : 0,
       "datatype" : "none",
       "lowtrigger" : 0,
@@ -125,7 +125,7 @@ var control = {
     },
     {
       "name" : "Sensor 3",
-      "status": "disabled",
+      "status": "Disabled",
       "data" : 0,
       "datatype" : "none",
       "lowtrigger" : 0,
@@ -133,7 +133,7 @@ var control = {
     },
     {
       "name" : "Sensor 4",
-      "status": "disabled",
+      "status": "Disabled",
       "data" : 0,
       "datatype" : "none",
       "lowtrigger" : 0,
@@ -308,6 +308,22 @@ function TankCheck()
     WarningCheck();
   //}
 
+  if (1==1)
+  {
+    var msg = control.sensor[0].name + " is reporting " + control.sensor[0].datatype + " is too low!";
+    var temp = new Object();
+    temp["text"] = msg;
+    temp["type"] = 1;
+    var exists = false;
+    for (var i = 0, len = control.warning.length; i < len; i++) {
+      if (control.warning[i].type == temp.type)
+        exists = true;
+    }
+    if (exists == false)
+      control.warning.push(temp);
+    
+  }
+
   console.log('Completed TankCheck.');
   console.log('-----------------------------');
 }
@@ -325,7 +341,7 @@ function SaveSettings()
 
 function TriggerCheck()
 {
-  if (control.outlet[0].trigger = "sensor")
+  if (control.outlet[0].trigger == "sensor")
   {
     //compare low trigger value against data
     /*
@@ -385,9 +401,7 @@ function ScheduleCheck()
   //update control
 
   //if a change in outlet conditions has occurred then update the web
-  if (changesmade == true)
-    control.update = 1;
-
+  
   console.log('Schedule check complete.');
   console.log('-----------------------------');
 
@@ -396,18 +410,6 @@ function ScheduleCheck()
 function WarningCheck()
 {
   console.log('Checking for warning conditions.');
-
-  //test case
-  console.log('Sending test warning!');
-  var msg = control.sensor[0].name + " is reporting " + control.sensor[0].datatype + " is too low!";
-  var temp = new Object();
-  temp["text"] = msg;
-  temp["type"] = 1;
-  control.warning.push(temp);
-  console.log('Warning message: ' + control.warning[1].text);
-  console.log('Warning type: ' + control.warning[1].type);
-  console.log('Control.update has been set.');
-  console.log('Control.update: ' + control.update);
 
   //check if filter has stopped working
 
@@ -458,26 +460,26 @@ function SensorCheck()
 {
   console.log('Reading sensors...');
   //check sensor 1
-  if (control.sensor[0].status == "enabled")
+  if (control.sensor[0].status == "Enabled")
   {
     //read data
   }
   
 
   //check sensor 2
-  if (control.sensor[1].status == "enabled")
+  if (control.sensor[1].status == "Enabled")
   {
     //read data
   }
 
   //check sensor 3
-  if (control.sensor[2].status == "enabled")
+  if (control.sensor[2].status == "Enabled")
   {
     //read data
   }
 
   //check sensor 4
-  if (control.sensor[3].status == "enabled")
+  if (control.sensor[3].status == "Enabled")
   {
     //read data
   }

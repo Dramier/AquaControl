@@ -287,12 +287,35 @@ DONE - Setup periodic saving of those variables.
 DONE - Setup first start loading of those variables.
 
 Setup warnings page and warnings button on home page.
-	Warnings are being put beneath the HOME button - fix this.
-	Warnings are not being added to the home page notification bar.
-	Make sure the server forces the browser to refresh when an event is sent.
-Complete the sensors page.
-Complete the settings page.
+	DONE - Warnings are being put beneath the HOME button - fix this.
+	DONE - Warnings are not being added to the home page notification bar.
+	DONE - Make sure the server forces the browser to refresh when an event is sent.
+	Make it keep track of the number of rx'd warnings.
 
+Complete the sensors page.
+	Make sensor list display too low readings in blue.
+	Good readings in green.
+	Too high readings in red.
+	Disabled sensors in grey with name listed as Disabled.
+
+Complete the settings page.
+Add the sensor dropdown to outlet configs.
+	Dropdown menu of enabled sensors.
+	Add sensor based checks to server.
+
+
+
+Make an initial setup page and add a link to it to the settings page.
+	First page asks how many outlets will be used.
+	Second page asks how many sensors will be used.
+	Third page asks for names and setup of the outlets in sequence.
+	Fourth page does the same for sensors.
+	Fifth page asks for sound settings.
+	Sixth page asks any remaining questions.
+	Last page has button for each of the six pages to return to it, and a confirm and cancel buttons.
+		The cancel button will goto a blank page which says come back when ready.
+		Confirm sends the config to the server and saves it.
+		Any page selection just goes to the specific page and then returns.
 
 
 
