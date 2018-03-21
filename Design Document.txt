@@ -293,14 +293,15 @@ Setup warnings page and warnings button on home page.
 	Make it keep track of the number of rx'd warnings.
 
 Complete the sensors page.
-	Make sensor list display too low readings in blue.
-	Good readings in green.
-	Too high readings in red.
-	Disabled sensors in grey with name listed as Disabled.
+	DONE - Make sensor list display too low readings in blue.
+	DONE - Good readings in green.
+	DONE - Too high readings in red.
+	DONE - Disabled sensors in grey. 
 
 Complete the settings page.
+
 Add the sensor dropdown to outlet configs.
-	Dropdown menu of enabled sensors.
+	DONE - Dropdown menu of enabled sensors.
 	Add sensor based checks to server.
 
 

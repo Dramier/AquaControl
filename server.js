@@ -210,11 +210,13 @@ app.get('/', function(req, res){
   console.log('URL base: Incoming connection.');
   console.log('-----------------------------');
   res.sendFile(__dirname + '/public/home.htm');
+
 });
 
 app.get('/pc', function(req, res){
   console.log('URL pc: Incoming connection.');
   console.log('-----------------------------');
+  
   res.sendFile(__dirname + '/public/homepc.htm');
 });
 
@@ -307,22 +309,6 @@ function TankCheck()
     TriggerCheck();
     WarningCheck();
   //}
-
-  if (1==1)
-  {
-    var msg = control.sensor[0].name + " is reporting " + control.sensor[0].datatype + " is too low!";
-    var temp = new Object();
-    temp["text"] = msg;
-    temp["type"] = 1;
-    var exists = false;
-    for (var i = 0, len = control.warning.length; i < len; i++) {
-      if (control.warning[i].type == temp.type)
-        exists = true;
-    }
-    if (exists == false)
-      control.warning.push(temp);
-    
-  }
 
   console.log('Completed TankCheck.');
   console.log('-----------------------------');

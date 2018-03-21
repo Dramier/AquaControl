@@ -60,25 +60,25 @@
     </div>
     <div class="row">
         <div class="col">
-            <button type="button" id="status_outlet1" class="btn btn-success" onclick="go_outlet_config1()">1</button>
+            <button type="button" id="status_outlet1" class="btn btn-success" onclick="go_outlet_config(0)">1</button>
         </div>
         <div class="col">
-            <button type="button" id="status_outlet2" class="btn btn-success" onclick="go_outlet_config2()">2</button>
+            <button type="button" id="status_outlet2" class="btn btn-success" onclick="go_outlet_config(1)">2</button>
         </div>
         <div class="col">
-            <button type="button" id="status_outlet3" class="btn btn-success">3</button>
+            <button type="button" id="status_outlet3" class="btn btn-success" onclick="go_outlet_config(2)">3</button>
         </div>
     </div>
     <br>
     <div class="row">
         <div class="col">
-                <button type="button" id="status_outlet4" class="btn btn-success">4</button>
+                <button type="button" id="status_outlet4" class="btn btn-success" onclick="go_outlet_config(3)">4</button>
         </div>
         <div class="col">
-                <button type="button" id="status_outlet5" class="btn btn-success">5</button>
+                <button type="button" id="status_outlet5" class="btn btn-success" onclick="go_outlet_config(4)">5</button>
         </div>
         <div class="col">
-                <button type="button" id="status_outlet6" class="btn btn-success">6</button>
+                <button type="button" id="status_outlet6" class="btn btn-success" onclick="go_outlet_config(5)">6</button>
         </div>
     </div>
     <br>
@@ -99,32 +99,6 @@
         </div>
     </div>
 </div>
-
-
-<!-- Outlet Status 1 -->
-<div class="outlet_status1" id="outlet_status1">
-    <p>Outlet 1</p>
-    <div class="row">
-        <div class="col">
-            <button type="button" class="btn btn-success">On</button>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col">
-            <button type="button" class="btn btn-success" onclick="go_outlet_config1()">Settings</button>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col">
-            <button type="button" class="btn btn-info" onclick="go_home()">Home</button>
-        </div>
-    </div>
-    
-
-</div>
-
 
 <!-- Main Config Screen -->
 <div class="config_main" id="config_main">
@@ -153,335 +127,192 @@
 
 </div>
 
-<!-- Outlet Config 1 -->
-<div class="outlet_config1" id="outlet_config1">
-    <div class="outlet1_control" id="outlet1_control"></div>
-    <p>Outlet Config 1</p>
-    <p id="outlet_config1_name">Unknown Device</p>
+<!-- Outlet Config -->
+<div class="outlet_config" id="outlet_config" value=0>
+    <div class="outlet_control" id="outlet_control"></div>
+    <p>Outlet Config</p>
+    <p id="outlet_config_name">Unknown Device</p>
     <div class="form-group">
-        <label for="outletname1">Device Name:</label>
-        <input type="text" class="form-control" id="outletname1">
+        <label for="outletname">Device Name:</label>
+        <input type="text" class="form-control" id="outletname">
     </div>
     <div class="dropdown">
-        <button type="button" id="dbutton1" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+        <button type="button" id="dbutton" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             Control Type
         </button>
         <div class="dropdown-menu">
-            <button class="dropdown-item" type="button" onclick="select_disabled1()">Disabled</a>
-            <button class="dropdown-item" type="button" onclick="select_Manual1()">Manual</a>
-            <button class="dropdown-item" type="button" onclick="select_hourly1()">Hourly</a>
-            <button class="dropdown-item" type="button">Sensor</a>
+            <button class="dropdown-item" type="button" onclick="select_disabled()">Disabled</a>
+            <button class="dropdown-item" type="button" onclick="select_manual()">Manual</a>
+            <button class="dropdown-item" type="button" onclick="select_hourly()">Hourly</a>
+            <button class="dropdown-item" type="button" onclick="select_sensor()">Sensor</a>
         </div>
     </div>
     <br>
-    <div class="manual_button1" id="manual_button1">
-        <button type="button" class="btn btn-danger" id="mbutton1" onclick="toggle_mbutton1()">Disabled</button>
+    <div class="dropdown" id="manual_sensor">
+        <button type="button" id="msbutton" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            Control Sensor
+        </button>
+        <div class="dropdown-menu">
+            <button class="dropdown-item" type="button" id="cs_button1" onclick="select_control_sensor(0)">Sensor 1</a>
+            <button class="dropdown-item" type="button" id="cs_button2" onclick="select_control_sensor(1)">Sensor 2</a>
+            <button class="dropdown-item" type="button" id="cs_button3" onclick="select_control_sensor(2)">Sensor 3</a>
+            <button class="dropdown-item" type="button" id="cs_button4" onclick="select_control_sensor(3)">Sensor 4</a>
+        </div>
+        <div class="controltext">
+            <br>
+            <p id="controltext">Controlled by Sensor 1</p>
+        </div>
     </div>
-    <div class="manual_disabled1" id="manual_disabled1">
+        
+    <!--</div>-->
+    <div class="manual_button" id="manual_button">
+        <button type="button" class="btn btn-success" id="mbutton" onclick="toggle_mbutton()">Disabled</button>
+    </div>
+    <div class="manual_disabled" id="manual_disabled">
         <div class="alert alert-danger">
             Disabled.
         </div>
     </div>
-    <div class="manual_hourly1" id="manual_hourly1">
+    <div class="manual_hourly" id="manual_hourly">
         <div class="row">
             <div class="col">
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" value="" id="1hour0">00 to 01
+                        <input type="checkbox" class="form-check-input" value="" id="hour0">00 to 01
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" value="" id="1hour1">01 to 02
+                        <input type="checkbox" class="form-check-input" value="" id="hour1">01 to 02
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" value="" id="1hour2">02 to 03
+                        <input type="checkbox" class="form-check-input" value="" id="hour2">02 to 03
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" value="" id="1hour3">03 to 04                        
+                        <input type="checkbox" class="form-check-input" value="" id="hour3">03 to 04                        
                     </label>
                 </div>
                 <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour4">04 to 05
+                            <input type="checkbox" class="form-check-input" value="" id="hour4">04 to 05
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour5">05 to 06
+                            <input type="checkbox" class="form-check-input" value="" id="hour5">05 to 06
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour6">06 to 07
+                            <input type="checkbox" class="form-check-input" value="" id="hour6">06 to 07
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour7">07 to 08
+                            <input type="checkbox" class="form-check-input" value="" id="hour7">07 to 08
                         </label>
                     </div>
                     <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour8">08 to 09
+                                <input type="checkbox" class="form-check-input" value="" id="hour8">08 to 09
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour9">09 to 10
+                                <input type="checkbox" class="form-check-input" value="" id="hour9">09 to 10
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour10">10 to 11
+                                <input type="checkbox" class="form-check-input" value="" id="hour10">10 to 11
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour11">11 to 12                        
+                                <input type="checkbox" class="form-check-input" value="" id="hour11">11 to 12                        
                             </label>
                         </div>
             </div>
             <div class="col">
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour12">12 to 13
+                            <input type="checkbox" class="form-check-input" value="" id="hour12">12 to 13
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour13">13 to 14
+                            <input type="checkbox" class="form-check-input" value="" id="hour13">13 to 14
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour14">14 to 15
+                            <input type="checkbox" class="form-check-input" value="" id="hour14">14 to 15
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="1hour15">15 to 16
+                            <input type="checkbox" class="form-check-input" value="" id="hour15">15 to 16
                         </label>
                     </div>
                     <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour16">16 to 17
+                                <input type="checkbox" class="form-check-input" value="" id="hour16">16 to 17
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour17">17 to 18
+                                <input type="checkbox" class="form-check-input" value="" id="hour17">17 to 18
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour18">18 to 19
+                                <input type="checkbox" class="form-check-input" value="" id="hour18">18 to 19
                             </label>
                         </div>
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="1hour19">19 to 20
+                                <input type="checkbox" class="form-check-input" value="" id="hour19">19 to 20
                             </label>
                         </div>
                         <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="1hour20">20 to 21
+                                    <input type="checkbox" class="form-check-input" value="" id="hour20">20 to 21
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="1hour21">21 to 22
+                                    <input type="checkbox" class="form-check-input" value="" id="hour21">21 to 22
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="1hour22">22 to 23
+                                    <input type="checkbox" class="form-check-input" value="" id="hour22">22 to 23
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="1hour23">23 to 00                        
+                                    <input type="checkbox" class="form-check-input" value="" id="hour23">23 to 00                        
                                 </label>
                             </div>
                 </div>
         </div>
     </div>
     <br>
-    <button type="button" class="btn btn-info" onclick="submit_outlet_config1();go_home()">Home</button>
+    <button type="button" class="btn btn-info" onclick="submit_outlet_config();go_home()">Home</button>
 </div>
 
-<!-- Outlet Config 2 -->
-<div class="outlet_config2" id="outlet_config2">
-        <div class="outlet2_control" id="outlet2_control"></div>
-        <p>Outlet Config 2</p>
-        <p id="outlet_config2_name">Unknown Device</p>
-        <div class="form-group">
-            <label for="outletname2">Device Name:</label>
-            <input type="text" class="form-control" id="outletname2">
-        </div>
-        <div class="dropdown">
-            <button type="button" id="dbutton2" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                Control Type
-            </button>
-            <div class="dropdown-menu">
-                <button class="dropdown-item" type="button" onclick="select_disabled2()">Disabled</a>
-                <button class="dropdown-item" type="button" onclick="select_manual2()">Manual</a>
-                <button class="dropdown-item" type="button" onclick="select_hourly2()">Hourly</a>
-                <button class="dropdown-item" type="button">Sensor</a>
-            </div>
-        </div>
-        <br>
-        <div class="manual_button2" id="manual_button2">
-            <button type="button" class="btn btn-success" id="mbutton2" onclick="toggle_mbutton2()">Disabled</button>
-        </div>
-        <div class="manual_disabled2" id="manual_disabled2">
-            <div class="alert alert-danger">
-                Disabled.
-            </div>
-        </div>
-        <div class="manual_hourly2" id="manual_hourly2">
-            <div class="row">
-                <div class="col">
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="2hour0">00 to 01
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="2hour1">01 to 02
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="2hour2">02 to 03
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" value="" id="2hour3">03 to 04                        
-                        </label>
-                    </div>
-                    <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour4">04 to 05
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour5">05 to 06
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour6">06 to 07
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour7">07 to 08
-                            </label>
-                        </div>
-                        <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour8">08 to 09
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour9">09 to 10
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour10">10 to 11
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour11">11 to 12                        
-                                </label>
-                            </div>
-                </div>
-                <div class="col">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour12">12 to 13
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour13">13 to 14
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour14">14 to 15
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" value="" id="2hour15">15 to 16
-                            </label>
-                        </div>
-                        <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour16">16 to 17
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour17">17 to 18
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour18">18 to 19
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" id="2hour19">19 to 20
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="" id="2hour20">20 to 21
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="" id="2hour21">21 to 22
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="" id="2hour22">22 to 23
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" value="" id="2hour23">23 to 00                        
-                                    </label>
-                                </div>
-                    </div>
-            </div>
-        </div>
-        <br>
-        <button type="button" class="btn btn-info" onclick="submit_outlet_config2();go_home()">Home</button>
-    </div>
 
 <!-- Sensor List -->
 <div class="sensor_list" id="sensor_list">
     <div class="btn-group-vertical">
-        <button type="button" class="btn btn-primary" id="sensor1" onclick="go_config_sensor1()">1</button>
-        <button type="button" class="btn btn-primary" id="sensor2">2</button>
-        <button type="button" class="btn btn-primary" id="sensor3">3</button>
-        <button type="button" class="btn btn-primary" id="sensor4">4</button>
+        <button type="button" class="btn btn-primary" id="sensor1" onclick="go_config_sensor(0)">1</button>
+        <button type="button" class="btn btn-primary" id="sensor2" onclick="go_config_sensor(1)">2</button>
+        <button type="button" class="btn btn-primary" id="sensor3" onclick="go_config_sensor(2)">3</button>
+        <button type="button" class="btn btn-primary" id="sensor4" onclick="go_config_sensor(3)">4</button>
     </div>
     <br><br>
     <div class="row">
@@ -491,28 +322,36 @@
     </div>
 </div>
 
-<!-- Config Sensor 1 -->
-<div class="config_sensor1" id="config_sensor1">
+<!-- Config Sensor -->
+<div class="config_sensor" id="config_sensor" value=0>
     <div class="form-group">
-        <label for="sensorname1">Sensor Name:</label>
-        <input type="text" class="form-control" id="sensorname1">
+        <label for="sensorname">Sensor Name:</label>
+        <input type="text" class="form-control" id="sensorname">
     </div>
-    <div class="sensor_status1" id="sensor_status1">
-            <button type="button" class="btn btn-danger" id="sbutton1" onclick="toggle_sbutton1()">Disabled</button>
+    <div class="sensor_status" id="sensor_status">
+            <button type="button" class="btn btn-danger" id="sbutton" onclick="toggle_sbutton()">Disabled</button>
         </div>
     <div class="form-group">
-            <label for="sensorname1">Data Type:</label>
-            <input type="text" class="form-control" id="datatype1"> 
+            <label for="sensorname">Data Type:</label>
+            <input type="text" class="form-control" id="datatype"> 
         </div>
     <div class="form-group">
-        <label for="lowtrigger1">Low Trigger:</label>
-        <input type="text" class="form-control" id="lowtrigger1">
+        <label for="lowtrigger">Low Trigger:</label>
+        <input type="text" class="form-control" id="lowtrigger">
     </div>
     <div class="form-group">
-        <label for="hightrigger1">High Trigger:</label>
-        <input type="text" class="form-control" id="hightrigger1">        
+        <label for="hightrigger">High Trigger:</label>
+        <input type="text" class="form-control" id="hightrigger">        
     </div>
-    <button type="button" class="btn btn-info" onclick="submit_sensor_config1();go_home()">Home</button>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-info" onclick="submit_sensor_config();go_home();go_sensor_list()">Back</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-info" onclick="submit_sensor_config();go_home()">Home</button>
+        </div>
+    </div>
+
 </div>
 
 <!-- Control Functions -->
@@ -521,107 +360,65 @@
         {
             socket.emit('reset', control);
         }
-        function submit_sensor_config1()
+        
+        //When user clicks HOME, submit the sensor configuration information to the server.
+        function submit_sensor_config()
         {
-            control.sensor[0].name = document.getElementById("sensorname1").value;
-            control.sensor[0].lowtrigger = document.getElementById("lowtrigger1").value;
-            control.sensor[0].hightrigger = document.getElementById("hightrigger1").value;
-            control.sensor[0].datatype = document.getElementById("datatype1").value;
+            console.log('Submit sensor config called.');
+            var sensor_number = document.getElementById("config_sensor").value;
+            control.sensor[sensor_number].name = document.getElementById("sensorname").value;
+            control.sensor[sensor_number].lowtrigger = document.getElementById("lowtrigger").value;
+            control.sensor[sensor_number].hightrigger = document.getElementById("hightrigger").value;
+            control.sensor[sensor_number].datatype = document.getElementById("datatype").value;
             
             socket.emit('control update', control);
         }
-        function submit_outlet_config1()
-        {
-            control.outlet[0].sched[0] = document.getElementById("1hour0").checked;
-            control.outlet[0].sched[1] = document.getElementById("1hour1").checked;
-            control.outlet[0].sched[2] = document.getElementById("1hour2").checked;
-            control.outlet[0].sched[3] = document.getElementById("1hour3").checked;
-            control.outlet[0].sched[4] = document.getElementById("1hour4").checked;
-            control.outlet[0].sched[5] = document.getElementById("1hour5").checked;
-            control.outlet[0].sched[6] = document.getElementById("1hour6").checked;
-            control.outlet[0].sched[7] = document.getElementById("1hour7").checked;
-            control.outlet[0].sched[8] = document.getElementById("1hour8").checked;
-            control.outlet[0].sched[9] = document.getElementById("1hour9").checked;
-            control.outlet[0].sched[10] = document.getElementById("1hour10").checked;
-            control.outlet[0].sched[11] = document.getElementById("1hour11").checked;
-            control.outlet[0].sched[12] = document.getElementById("1hour12").checked;
-            control.outlet[0].sched[13] = document.getElementById("1hour13").checked;
-            control.outlet[0].sched[14] = document.getElementById("1hour14").checked;
-            control.outlet[0].sched[15] = document.getElementById("1hour15").checked;
-            control.outlet[0].sched[16] = document.getElementById("1hour16").checked;
-            control.outlet[0].sched[17] = document.getElementById("1hour17").checked;
-            control.outlet[0].sched[18] = document.getElementById("1hour18").checked;
-            control.outlet[0].sched[19] = document.getElementById("1hour19").checked;
-            control.outlet[0].sched[20] = document.getElementById("1hour20").checked;
-            control.outlet[0].sched[21] = document.getElementById("1hour21").checked;
-            control.outlet[0].sched[22] = document.getElementById("1hour22").checked;
-            control.outlet[0].sched[23] = document.getElementById("1hour23").checked;
-            control.outlet[0].name = document.getElementById("outletname1").value;
-            socket.emit('control update', control);
 
-        }
-
-        function submit_outlet_config2()
+        function submit_outlet_config()
         {
-            control.outlet[1].sched[0] = document.getElementById("2hour0").checked;
-            control.outlet[1].sched[1] = document.getElementById("2hour1").checked;
-            control.outlet[1].sched[2] = document.getElementById("2hour2").checked;
-            control.outlet[1].sched[3] = document.getElementById("2hour3").checked;
-            control.outlet[1].sched[4] = document.getElementById("2hour4").checked;
-            control.outlet[1].sched[5] = document.getElementById("2hour5").checked;
-            control.outlet[1].sched[6] = document.getElementById("2hour6").checked;
-            control.outlet[1].sched[7] = document.getElementById("2hour7").checked;
-            control.outlet[1].sched[8] = document.getElementById("2hour8").checked;
-            control.outlet[1].sched[9] = document.getElementById("2hour9").checked;
-            control.outlet[1].sched[10] = document.getElementById("2hour10").checked;
-            control.outlet[1].sched[11] = document.getElementById("2hour11").checked;
-            control.outlet[1].sched[12] = document.getElementById("2hour12").checked;
-            control.outlet[1].sched[13] = document.getElementById("2hour13").checked;
-            control.outlet[1].sched[14] = document.getElementById("2hour14").checked;
-            control.outlet[1].sched[15] = document.getElementById("2hour15").checked;
-            control.outlet[1].sched[16] = document.getElementById("2hour16").checked;
-            control.outlet[1].sched[17] = document.getElementById("2hour17").checked;
-            control.outlet[1].sched[18] = document.getElementById("2hour18").checked;
-            control.outlet[1].sched[19] = document.getElementById("2hour19").checked;
-            control.outlet[1].sched[20] = document.getElementById("2hour20").checked;
-            control.outlet[1].sched[21] = document.getElementById("2hour21").checked;
-            control.outlet[1].sched[22] = document.getElementById("2hour22").checked;
-            control.outlet[1].sched[23] = document.getElementById("2hour23").checked;
-            control.outlet[1].name = document.getElementById("outletname2").value;
+            console.log('Submit outlet config called.');
+            var outlet_number = document.getElementById("outlet_config").value;
+            control.outlet[outlet_number].sched[0] = document.getElementById("hour0").checked;
+            control.outlet[outlet_number].sched[1] = document.getElementById("hour1").checked;
+            control.outlet[outlet_number].sched[2] = document.getElementById("hour2").checked;
+            control.outlet[outlet_number].sched[3] = document.getElementById("hour3").checked;
+            control.outlet[outlet_number].sched[4] = document.getElementById("hour4").checked;
+            control.outlet[outlet_number].sched[5] = document.getElementById("hour5").checked;
+            control.outlet[outlet_number].sched[6] = document.getElementById("hour6").checked;
+            control.outlet[outlet_number].sched[7] = document.getElementById("hour7").checked;
+            control.outlet[outlet_number].sched[8] = document.getElementById("hour8").checked;
+            control.outlet[outlet_number].sched[9] = document.getElementById("hour9").checked;
+            control.outlet[outlet_number].sched[10] = document.getElementById("hour10").checked;
+            control.outlet[outlet_number].sched[11] = document.getElementById("hour11").checked;
+            control.outlet[outlet_number].sched[12] = document.getElementById("hour12").checked;
+            control.outlet[outlet_number].sched[13] = document.getElementById("hour13").checked;
+            control.outlet[outlet_number].sched[14] = document.getElementById("hour14").checked;
+            control.outlet[outlet_number].sched[15] = document.getElementById("hour15").checked;
+            control.outlet[outlet_number].sched[16] = document.getElementById("hour16").checked;
+            control.outlet[outlet_number].sched[17] = document.getElementById("hour17").checked;
+            control.outlet[outlet_number].sched[18] = document.getElementById("hour18").checked;
+            control.outlet[outlet_number].sched[19] = document.getElementById("hour19").checked;
+            control.outlet[outlet_number].sched[20] = document.getElementById("hour20").checked;
+            control.outlet[outlet_number].sched[21] = document.getElementById("hour21").checked;
+            control.outlet[outlet_number].sched[22] = document.getElementById("hour22").checked;
+            control.outlet[outlet_number].sched[23] = document.getElementById("hour23").checked;
+            control.outlet[outlet_number].name = document.getElementById("outletname").value;
             socket.emit('control update', control);
 
         }
 
         function go_home()
         {
-            if (document.getElementById("config_sensor1").style.display === 'block')
-                setup_sensornames();
-
-            document.getElementById("outlet_status1").style.display = 'none';
-            //document.getElementById("outlet_status2").style.display = 'none';
-            //document.getElementById("outlet_status3").style.display = 'none';
-            //document.getElementById("outlet_status4").style.display = 'none';
-            //document.getElementById("outlet_status5").style.display = 'none';
-            //document.getElementById("outlet_status6").style.display = 'none';
-    
+            console.log('Go home called.');
             document.getElementById("warnings_page").style.display = 'none';
             document.getElementById("config_main").style.display = 'none';
     
-            document.getElementById("outlet_config1").style.display = 'none';
-            document.getElementById("outlet_config2").style.display = 'none';
-            //document.getElementById("outlet_config3").style.display = 'none';
-            //document.getElementById("outlet_config4").style.display = 'none';
-            //document.getElementById("outlet_config5").style.display = 'none';
-            //document.getElementById("outlet_config6").style.display = 'none';
-    
+            document.getElementById("outlet_config").style.display = 'none';
+            
             document.getElementById("sensor_list").style.display = 'none';
     
-            document.getElementById("config_sensor1").style.display = 'none';
-            //document.getElementById("config_sensor2").style.display = 'none';
-            //document.getElementById("config_sensor3").style.display = 'none';
-            //document.getElementById("config_sensor4").style.display = 'none';
-            //document.getElementById("config_sensor5").style.display = 'none';
-            //document.getElementById("config_sensor6").style.display = 'none';
+            document.getElementById("config_sensor").style.display = 'none';
+            
             refresh_warns();
             document.getElementById("screen_home").style.display = 'block';
 
@@ -646,292 +443,406 @@
     
         function go_sensor_list()
         {
-            document.getElementById("sensorname1").innerHTML = control.sensor[0].name;
-            document.getElementById("sensor1").innerHTML = control.sensor[0].name;
+            console.log('Go sensor list called.');
+            if (control.sensor[0].status == "Disabled")
+            {
+                console.log('Sensor 1 is disabled.');
+                $("#sensor1").removeClass("btn btn-danger");
+                $("#sensor1").removeClass("btn btn-success");
+                $("#sensor1").removeClass("btn btn-info");
+                $("#sensor1").removeClass("btn btn-primary");
+                $("#sensor1").addClass("btn");
+            }
+            else 
+            {
+                console.log('Sensor 1 is NOT disabled.');
+                if ((control.sensor[0].data >= control.sensor[0].lowtrigger) && (control.sensor[0].data <= control.sensor[0].hightrigger))
+                {
+                    $("#sensor1").removeClass("btn btn-danger");
+                    $("#sensor1").removeClass("btn btn-default");
+                    $("#sensor1").removeClass("btn btn-info");
+                    $("#sensor1").removeClass("btn btn-primary");
+                    $("#sensor1").addClass("btn btn-success");
+                }
+                if (control.sensor[0].data < control.sensor[0].lowtrigger)
+                {
+                    $("#sensor1").removeClass("btn btn-danger");
+                    $("#sensor1").removeClass("btn btn-success");
+                    $("#sensor1").removeClass("btn btn-default");
+                    $("#sensor1").removeClass("btn btn-primary");
+                    $("#sensor1").addClass("btn btn-info");
+                }
+                if (control.sensor[0].data > control.sensor[0].hightrigger)
+                {
+                    $("#sensor1").removeClass("btn btn-default");
+                    $("#sensor1").removeClass("btn btn-success");
+                    $("#sensor1").removeClass("btn btn-info");
+                    $("#sensor1").removeClass("btn btn-primary");
+                    $("#sensor1").addClass("btn btn-danger");
+                }
+            }
+
+            if (control.sensor[1].status == "Disabled")
+            {
+                $("#sensor2").removeClass("btn btn-danger");
+                $("#sensor2").removeClass("btn btn-success");
+                $("#sensor2").removeClass("btn btn-info");
+                $("#sensor2").removeClass("btn btn-primary");
+                $("#sensor2").addClass("btn");
+            }
+            else 
+            {
+                if ((control.sensor[1].data >= control.sensor[1].lowtrigger) && (control.sensor[1].data <= control.sensor[1].hightrigger))
+                {
+                    $("#sensor2").removeClass("btn btn-danger");
+                    $("#sensor2").removeClass("btn btn-default");
+                    $("#sensor2").removeClass("btn btn-info");
+                    $("#sensor2").removeClass("btn btn-primary");
+                    $("#sensor2").addClass("btn btn-success");
+                }
+                if (control.sensor[1].data < control.sensor[1].lowtrigger)
+                {
+                    $("#sensor2").removeClass("btn btn-danger");
+                    $("#sensor2").removeClass("btn btn-success");
+                    $("#sensor2").removeClass("btn btn-default");
+                    $("#sensor2").removeClass("btn btn-primary");
+                    $("#sensor2").addClass("btn btn-info");
+                }
+                if (control.sensor[1].data > control.sensor[1].hightrigger)
+                {
+                    $("#sensor2").removeClass("btn btn-default");
+                    $("#sensor2").removeClass("btn btn-success");
+                    $("#sensor2").removeClass("btn btn-info");
+                    $("#sensor2").removeClass("btn btn-primary");
+                    $("#sensor2").addClass("btn btn-danger");
+                }
+            }
+
+            if (control.sensor[2].status == "Disabled")
+            {
+                $("#sensor3").removeClass("btn btn-danger");
+                $("#sensor3").removeClass("btn btn-success");
+                $("#sensor3").removeClass("btn btn-info");
+                $("#sensor3").removeClass("btn btn-primary");
+                $("#sensor3").addClass("btn");
+            }
+            else 
+            {
+                if ((control.sensor[2].data >= control.sensor[2].lowtrigger) && (control.sensor[2].data <= control.sensor[2].hightrigger))
+                {
+                    $("#sensor3").removeClass("btn btn-danger");
+                    $("#sensor3").removeClass("btn btn-default");
+                    $("#sensor3").removeClass("btn btn-info");
+                    $("#sensor3").removeClass("btn btn-primary");
+                    $("#sensor3").addClass("btn btn-success");
+                }
+                if (control.sensor[2].data < control.sensor[2].lowtrigger)
+                {
+                    $("#sensor3").removeClass("btn btn-danger");
+                    $("#sensor3").removeClass("btn btn-success");
+                    $("#sensor3").removeClass("btn btn-default");
+                    $("#sensor3").removeClass("btn btn-primary");
+                    $("#sensor3").addClass("btn btn-info");
+                }
+                if (control.sensor[2].data > control.sensor[2].hightrigger)
+                {
+                    $("#sensor3").removeClass("btn btn-default");
+                    $("#sensor3").removeClass("btn btn-success");
+                    $("#sensor3").removeClass("btn btn-info");
+                    $("#sensor3").removeClass("btn btn-primary");
+                    $("#sensor3").addClass("btn btn-danger");
+                }
+            }
+
+            if (control.sensor[3].status == "Disabled")
+            {
+                $("#sensor4").removeClass("btn btn-danger");
+                $("#sensor4").removeClass("btn btn-success");
+                $("#sensor4").removeClass("btn btn-info");
+                $("#sensor4").removeClass("btn btn-primary");
+                $("#sensor4").addClass("btn");
+            }
+            else 
+            {
+                if ((control.sensor[3].data >= control.sensor[3].lowtrigger) && (control.sensor[3].data <= control.sensor[3].hightrigger))
+                {
+                    $("#sensor4").removeClass("btn btn-danger");
+                    $("#sensor4").removeClass("btn btn-default");
+                    $("#sensor4").removeClass("btn btn-info");
+                    $("#sensor4").removeClass("btn btn-primary");
+                    $("#sensor4").addClass("btn btn-success");
+                }
+                if (control.sensor[3].data < control.sensor[3].lowtrigger)
+                {
+                    $("#sensor4").removeClass("btn btn-danger");
+                    $("#sensor4").removeClass("btn btn-success");
+                    $("#sensor4").removeClass("btn btn-default");
+                    $("#sensor4").removeClass("btn btn-primary");
+                    $("#sensor4").addClass("btn btn-info");
+                }
+                if (control.sensor[3].data > control.sensor[3].hightrigger)
+                {
+                    $("#sensor4").removeClass("btn btn-default");
+                    $("#sensor4").removeClass("btn btn-success");
+                    $("#sensor4").removeClass("btn btn-info");
+                    $("#sensor4").removeClass("btn btn-primary");
+                    $("#sensor4").addClass("btn btn-danger");
+                }
+            }
+            
+
+
             document.getElementById("sensor1").innerHTML = control.sensor[0].name + " : " + control.sensor[0].data;
-            //document.getElementById("sensorname1").innerHTML = control.sensor[0].name + " : " + control.sensor[0].data;
-            //document.getElementById("sensor2").innerHTML = control.sensor[1].name;
-            //document.getElementById("sensor3").innerHTML = control.sensor[2].name;
-            //document.getElementById("sensor4").innerHTML = control.sensor[3].name;
+            document.getElementById("sensor2").innerHTML = control.sensor[1].name + " : " + control.sensor[1].data;
+            document.getElementById("sensor3").innerHTML = control.sensor[2].name + " : " + control.sensor[2].data;
+            document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
+
             document.getElementById("screen_home").style.display = 'none';
             document.getElementById("sensor_list").style.display = 'block';
         }
     
     
-        function go_outlet_config1()
+        function go_outlet_config(outlet_number) 
         {
+            console.log('Go outlet config called.');
             go_home();
+            document.getElementById("outlet_config").value = outlet_number;
             document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("outlet_config1").style.display='block';
-            document.getElementById("manual_hourly1").style.display = 'none';
-            document.getElementById("manual_disabled1").style.display = 'none';
-            document.getElementById("manual_button1").style.display = 'none';
-            if (control.outlet[0].trigger == "Disabled")
-                document.getElementById("manual_disabled1").style.display = 'block';
-            if (control.outlet[0].trigger == "Manual")
-                document.getElementById("manual_button1").style.display = 'block';
-            if (control.outlet[0].trigger == "Hourly")
-                document.getElementById("manual_hourly1").style.display = 'block';
-
-            if (control.outlet[0].state == 0)
-            {
-                $("#mbutton1").removeClass("btn btn-success").addClass("btn btn-danger");
-            }
-            else
-            {
-                $("#mbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
-            }
+            document.getElementById("manual_hourly").style.display = 'none';
+            document.getElementById("manual_disabled").style.display = 'none';
+            document.getElementById("manual_button").style.display = 'none';
+            document.getElementById("manual_sensor").style.display = 'none';
             
-            document.getElementById("outlet_config1_name").innerHTML = control.outlet[0].name;
-
-            document.getElementById("1hour0").checked = control.outlet[0].sched[0];
-            document.getElementById("1hour1").checked = control.outlet[0].sched[1];
-            document.getElementById("1hour2").checked = control.outlet[0].sched[2];
-            document.getElementById("1hour3").checked = control.outlet[0].sched[3];
-            document.getElementById("1hour4").checked = control.outlet[0].sched[4];
-            document.getElementById("1hour5").checked = control.outlet[0].sched[5];
-            document.getElementById("1hour6").checked = control.outlet[0].sched[6];
-            document.getElementById("1hour7").checked = control.outlet[0].sched[7];
-            document.getElementById("1hour8").checked = control.outlet[0].sched[8];
-            document.getElementById("1hour9").checked = control.outlet[0].sched[9];
-            document.getElementById("1hour10").checked = control.outlet[0].sched[10];
-            document.getElementById("1hour11").checked = control.outlet[0].sched[11];
-            document.getElementById("1hour12").checked = control.outlet[0].sched[12];
-            document.getElementById("1hour13").checked = control.outlet[0].sched[13];
-            document.getElementById("1hour14").checked = control.outlet[0].sched[14];
-            document.getElementById("1hour15").checked = control.outlet[0].sched[15];
-            document.getElementById("1hour16").checked = control.outlet[0].sched[16];
-            document.getElementById("1hour17").checked = control.outlet[0].sched[17];
-            document.getElementById("1hour18").checked = control.outlet[0].sched[18];
-            document.getElementById("1hour19").checked = control.outlet[0].sched[19];
-            document.getElementById("1hour20").checked = control.outlet[0].sched[20];
-            document.getElementById("1hour21").checked = control.outlet[0].sched[21];
-            document.getElementById("1hour22").checked = control.outlet[0].sched[22];
-            document.getElementById("1hour23").checked = control.outlet[0].sched[23];
-        }
-
-        function go_outlet_config2()
-        {
-            go_home();
-            document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("outlet_config2").style.display='block';
-            document.getElementById("manual_hourly2").style.display = 'none';
-            document.getElementById("manual_disabled2").style.display = 'none';
-            document.getElementById("manual_button2").style.display = 'none';
-            if (control.outlet[1].trigger == "Disabled")
-                document.getElementById("manual_disabled2").style.display = 'block';
-            if (control.outlet[1].trigger == "Manual")
-                document.getElementById("manual_button2").style.display = 'block';
-            if (control.outlet[1].trigger == "Hourly")
-                document.getElementById("manual_hourly2").style.display = 'block';
-
-            if (control.outlet[1].state == 0)
+            if (control.outlet[outlet_number].state == 0)
             {
-                $("#mbutton2").removeClass("btn btn-success").addClass("btn btn-danger");
+                $("#mbutton").removeClass("btn btn-success").addClass("btn btn-danger");
             }
             else
             {
-                $("#mbutton2").removeClass("btn btn-danger").addClass("btn btn-success");
+                $("#mbutton").removeClass("btn btn-danger").addClass("btn btn-success");
             }
 
-            document.getElementById("outlet_config2_name").innerHTML = control.outlet[1].name;
+            document.getElementById("cs_button1").innerHTML = control.sensor[0].name;
+            document.getElementById("cs_button2").innerHTML = control.sensor[1].name;
+            document.getElementById("cs_button3").innerHTML = control.sensor[2].name;
+            document.getElementById("cs_button4").innerHTML = control.sensor[3].name;
 
+            document.getElementById("controltext").innerHTML = "Controlled by " + control.sensor[control.outlet[outlet_number].triggersensor].name;
 
-            document.getElementById("2hour0").checked = control.outlet[1].sched[0];
-            document.getElementById("2hour1").checked = control.outlet[1].sched[1];
-            document.getElementById("2hour2").checked = control.outlet[1].sched[2];
-            document.getElementById("2hour3").checked = control.outlet[1].sched[3];
-            document.getElementById("2hour4").checked = control.outlet[1].sched[4];
-            document.getElementById("2hour5").checked = control.outlet[1].sched[5];
-            document.getElementById("2hour6").checked = control.outlet[1].sched[6];
-            document.getElementById("2hour7").checked = control.outlet[1].sched[7];
-            document.getElementById("2hour8").checked = control.outlet[1].sched[8];
-            document.getElementById("2hour9").checked = control.outlet[1].sched[9];
-            document.getElementById("2hour10").checked = control.outlet[1].sched[10];
-            document.getElementById("2hour11").checked = control.outlet[1].sched[11];
-            document.getElementById("2hour12").checked = control.outlet[1].sched[12];
-            document.getElementById("2hour13").checked = control.outlet[1].sched[13];
-            document.getElementById("2hour14").checked = control.outlet[1].sched[14];
-            document.getElementById("2hour15").checked = control.outlet[1].sched[15];
-            document.getElementById("2hour16").checked = control.outlet[1].sched[16];
-            document.getElementById("2hour17").checked = control.outlet[1].sched[17];
-            document.getElementById("2hour18").checked = control.outlet[1].sched[18];
-            document.getElementById("2hour19").checked = control.outlet[1].sched[19];
-            document.getElementById("2hour20").checked = control.outlet[1].sched[20];
-            document.getElementById("2hour21").checked = control.outlet[1].sched[21];
-            document.getElementById("2hour22").checked = control.outlet[1].sched[22];
-            document.getElementById("2hour23").checked = control.outlet[1].sched[23];
+            
+            document.getElementById("outlet_config_name").innerHTML = control.outlet[outlet_number].name;
+            document.getElementById("outletname").value = control.outlet[outlet_number].name;
+
+            document.getElementById("hour0").checked = control.outlet[outlet_number].sched[0];
+            document.getElementById("hour1").checked = control.outlet[outlet_number].sched[1];
+            document.getElementById("hour2").checked = control.outlet[outlet_number].sched[2];
+            document.getElementById("hour3").checked = control.outlet[outlet_number].sched[3];
+            document.getElementById("hour4").checked = control.outlet[outlet_number].sched[4];
+            document.getElementById("hour5").checked = control.outlet[outlet_number].sched[5];
+            document.getElementById("hour6").checked = control.outlet[outlet_number].sched[6];
+            document.getElementById("hour7").checked = control.outlet[outlet_number].sched[7];
+            document.getElementById("hour8").checked = control.outlet[outlet_number].sched[8];
+            document.getElementById("hour9").checked = control.outlet[outlet_number].sched[9];
+            document.getElementById("hour10").checked = control.outlet[outlet_number].sched[10];
+            document.getElementById("hour11").checked = control.outlet[outlet_number].sched[11];
+            document.getElementById("hour12").checked = control.outlet[outlet_number].sched[12];
+            document.getElementById("hour13").checked = control.outlet[outlet_number].sched[13];
+            document.getElementById("hour14").checked = control.outlet[outlet_number].sched[14];
+            document.getElementById("hour15").checked = control.outlet[outlet_number].sched[15];
+            document.getElementById("hour16").checked = control.outlet[outlet_number].sched[16];
+            document.getElementById("hour17").checked = control.outlet[outlet_number].sched[17];
+            document.getElementById("hour18").checked = control.outlet[outlet_number].sched[18];
+            document.getElementById("hour19").checked = control.outlet[outlet_number].sched[19];
+            document.getElementById("hour20").checked = control.outlet[outlet_number].sched[20];
+            document.getElementById("hour21").checked = control.outlet[outlet_number].sched[21];
+            document.getElementById("hour22").checked = control.outlet[outlet_number].sched[22];
+            document.getElementById("hour23").checked = control.outlet[outlet_number].sched[23];
+
+            if (control.outlet[outlet_number].trigger == "Disabled")
+            {
+                console.log('Disabled shown.');
+                document.getElementById("manual_disabled").style.display = 'block';
+            }
+            if (control.outlet[outlet_number].trigger == "Manual")
+            {
+                console.log('Manual shown.');
+                document.getElementById("manual_button").style.display = 'block';
+            }
+            if (control.outlet[outlet_number].trigger == "Hourly")
+            {
+                console.log('Hourly shown.');
+                document.getElementById("manual_hourly").style.display = 'block';
+            }
+            if (control.outlet[outlet_number].trigger == "Sensor")
+            {
+                console.log('Sensor shown.');
+                document.getElementById("manual_sensor").style.display = 'block';
+            }
+
+            document.getElementById("outlet_config").style.display = 'block';
         }
-    
+
+        function select_control_sensor(sensor_number)
+        {
+            outlet_number = document.getElementById("outlet_config").value;
+            document.getElementById("controltext").innerHTML = "Controlled by " + control.sensor[sensor_number].name;
+            control.outlet[outlet_number].trigger = "Sensor";
+            control.outlet[outlet_number].triggersensor = sensor_number;
+            socket.emit('control update', control);
+        }
+
         function go_config_main()
         {
+            console.log('Go config main called.');
             go_home();
             document.getElementById("screen_home").style.display = 'none';
             document.getElementById("config_main").style.display='block';
         }
     
-        function go_config_sensor1()
+        function go_config_sensor(sensor_number)
         {
+            console.log('Go config sensor called.');
             go_home();
-            document.getElementById("sensorname1").value = control.sensor[0].name;
-            document.getElementById("lowtrigger1").value = control.sensor[0].lowtrigger;
-            document.getElementById("hightrigger1").value = control.sensor[0].hightrigger;
-            document.getElementById("datatype1").value = control.sensor[0].datatype;
+            document.getElementById("sensorname").value = control.sensor[sensor_number].name;
+            document.getElementById("lowtrigger").value = control.sensor[sensor_number].lowtrigger;
+            document.getElementById("hightrigger").value = control.sensor[sensor_number].hightrigger;
+            document.getElementById("datatype").value = control.sensor[sensor_number].datatype;
+            document.getElementById("config_sensor").value = sensor_number;
             document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("config_sensor1").style.display='block';
+            
+            if (control.sensor[sensor_number].status === 'Disabled')
+            {
+                console.log('Button is disabled.');
+                $('#sbutton').removeClass("btn btn-success").addClass("btn btn-danger");
+                document.getElementById('sbutton').innerHTML = "Disabled";
+            }
+            else
+            {
+                console.log('Button is enabled.');
+                $('#sbutton').removeClass("btn btn-danger").addClass("btn btn-success");
+                document.getElementById('sbutton').innerHTML = "Enabled";
+            }
+            document.getElementById("config_sensor").style.display='block';
         }
     
         function go_warnings_page()
         {
+            console.log('Go warnings page called.');
             go_home();
             document.getElementById("screen_home").style.display = 'none';
             document.getElementById("warnings_page").style.display='block';
         }
 
-        function select_hourly1()
+        function select_hourly()
         {
+            var outlet_number = document.getElementById("outlet_config").value;
             //document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("manual_hourly1").style.display = 'block';
-            document.getElementById("manual_disabled1").style.display = 'none';
-            document.getElementById("manual_button1").style.display = 'none';
+            document.getElementById("manual_hourly").style.display = 'block';
+            document.getElementById("manual_disabled").style.display = 'none';
+            document.getElementById("manual_button").style.display = 'none';
+            document.getElementById("manual_sensor").style.display = 'none';
             //document.getElementById("outlet1_control").textContent = "hourly";
-            control.outlet[0].trigger = "Hourly";
-            control.outlet[0].state = 0;
-            control.outlet[0].name = document.getElementById("outletname1").value;
-            socket.emit('control update', control);
+            control.outlet[outlet_number].trigger = "Hourly";
+            control.outlet[outlet_number].state = 0;
+            control.outlet[outlet_number].name = document.getElementById("outletname").value;
+            //socket.emit('control update', control);
         }
 
-        function select_hourly2()
+        function select_sensor()
         {
+            console.log('Select sensor called.');
+            var outlet_number = document.getElementById("outlet_config").value;
             //document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("manual_hourly2").style.display = 'block';
-            document.getElementById("manual_disabled2").style.display = 'none';
-            document.getElementById("manual_button2").style.display = 'none';
-            //document.getElementById("outlet2_control").textContent = "hourly";
-            control.outlet[1].trigger = "Hourly";
-            control.outlet[1].state = 0;
-            control.outlet[1].name = document.getElementById("outletname2").value;
-            socket.emit('control update', control);
+            document.getElementById("manual_hourly").style.display = 'none';
+            document.getElementById("manual_disabled").style.display = 'none';
+            document.getElementById("manual_button").style.display = 'none';
+            document.getElementById("manual_sensor").style.display = 'block';
+            //document.getElementById("outlet1_control").textContent = "hourly";
+            control.outlet[outlet_number].trigger = "Sensor";
+            control.outlet[outlet_number].state = 0;
+            control.outlet[outlet_number].name = document.getElementById("outletname").value;
+            //socket.emit('control update', control);
+
         }
 
-        function select_manual1()
+        function select_manual()
         {
+            var outlet_number = document.getElementById("outlet_config").value;
             //document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("manual_hourly1").style.display = 'none';
-            document.getElementById("manual_disabled1").style.display = 'none';
-            document.getElementById("manual_button1").style.display = 'block';
-            control.outlet[0].trigger = "Manual";
-            control.outlet[0].state = 0;
-            control.outlet[0].name = document.getElementById("outletname1").value;
-            socket.emit('control update', control);
+            document.getElementById("manual_hourly").style.display = 'none';
+            document.getElementById("manual_disabled").style.display = 'none';
+            document.getElementById("manual_sensor").style.display = 'none';
+            document.getElementById("manual_button").style.display = 'block';
+            control.outlet[outlet_number].trigger = "Manual";
+            control.outlet[outlet_number].state = 0;
+            control.outlet[outlet_number].name = document.getElementById("outletname").value;
+            //socket.emit('control update', control);
             
         }
 
-        function select_manual2()
+        function toggle_sbutton()
         {
-            //document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("manual_hourly2").style.display = 'none';
-            document.getElementById("manual_disabled2").style.display = 'none';
-            document.getElementById("manual_button2").style.display = 'block';
-            control.outlet[1].trigger = "Manual";
-            control.outlet[1].state = 0;
-            control.outlet[1].name = document.getElementById("outletname2").value;
-            socket.emit('control update', control);
-            
-        }
-
-        function toggle_sbutton1()
-        {
-            var btnclassName = $('#sbutton1').attr('class');
-            if (btnclassName === "btn btn-success")
+            console.log('Toggle sbutton called.');
+            var ref_sensor = document.getElementById("config_sensor").value;
+            console.log('Ref sensor = ' + ref_sensor);
+            var btnclassName = $('#sbutton').attr('class');
+            //if (btnclassName == "btn btn-success")
+            if (control.sensor[ref_sensor].status == "Enabled")
             {
-                $("#sbutton1").removeClass("btn btn-success").addClass("btn btn-danger");
-                document.getElementById("sbutton1").innerHTML = "Disabled";
-                control.sensor[0].status = "Disabled";
+                $('#sbutton').removeClass("btn btn-success").addClass("btn btn-danger");
+                document.getElementById('sbutton').innerHTML = "Disabled";
+                control.sensor[ref_sensor].status = "Disabled";
                 //control.outlet[0].name = document.getElementById("outletname1").value;
                 socket.emit('control update', control);
 
             }
             else
             {
-                $("#sbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
-                control.sensor[0].status = "Enabled";
-                document.getElementById("sbutton1").innerHTML = "Enabled";
+                $('#sbutton').removeClass("btn btn-danger").addClass("btn btn-success");
+                control.sensor[ref_sensor].status = "Enabled";
+                document.getElementById('sbutton').innerHTML = "Enabled";
                 //control.outlet[0].name = document.getElementById("outletname1").value;
                 socket.emit('control update', control);
             }
         }
 
-        function toggle_mbutton1()
+        function toggle_mbutton()
         {
-            var btnclassName = $('#mbutton1').attr('class');
-            if (btnclassName === "btn btn-success")
+            console.log('Toggle mbutton called.');
+            var outlet_number = document.getElementById("outlet_config").value;
+            var btnclassName = $('#mbutton').attr('class');
+            //if (btnclassName == "btn btn-success")
+            if (control.outlet[outlet_number].status == 1)
             {
-                $("#mbutton1").removeClass("btn btn-success").addClass("btn btn-danger");
-                document.getElementById("mbutton1").innerHTML = "Disabled";
-                control.outlet[0].state = 0;
-                control.outlet[0].name = document.getElementById("outletname1").value;
+                $("#mbutton").removeClass("btn btn-success").addClass("btn btn-danger");
+                document.getElementById("mbutton").innerHTML = "Disabled";
+                control.outlet[outlet_number].state = 0;
+                control.outlet[outlet_number].name = document.getElementById("outletname").value;
                 socket.emit('control update', control);
 
             }
             else
             {
-                $("#mbutton1").removeClass("btn btn-danger").addClass("btn btn-success");
-                document.getElementById("mbutton1").innerHTML = "Enabled";
-                control.outlet[0].state = 1;
-                control.outlet[0].name = document.getElementById("outletname1").value;
+                $("#mbutton").removeClass("btn btn-danger").addClass("btn btn-success");
+                document.getElementById("mbutton").innerHTML = "Enabled";
+                control.outlet[outlet_number].state = 1;
+                control.outlet[outlet_number].name = document.getElementById("outletname").value;
                 socket.emit('control update', control);
             }
         }
 
-        function toggle_mbutton2()
-        {
-            var btnclassName = $('#mbutton2').attr('class');
-            if (btnclassName === "btn btn-success")
-            {
-                $("#mbutton2").removeClass("btn btn-success").addClass("btn btn-danger");
-                document.getElementById("mbutton2").innerHTML = "Disabled";
-                control.outlet[1].state = 0;
-                control.outlet[1].name = document.getElementById("outletname2").value;
-                socket.emit('control update', control);
-
-            }
-            else
-            {
-                $("#mbutton2").removeClass("btn btn-danger").addClass("btn btn-success");
-                document.getElementById("mbutton2").innerHTML = "Enabled";
-                control.outlet[1].state = 1;
-                control.outlet[1].name = document.getElementById("outletname2").value;
-                socket.emit('control update', control);
-            }
-        }
-
-        function select_disabled1()
+        function select_disabled()
         {
             //document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("manual_hourly1").style.display = 'none';
-            document.getElementById("manual_disabled1").style.display = 'block';
-            document.getElementById("manual_button1").style.display = 'none';
-            //document.getElementById("outlet1_control").textContent = "Disabled";
-            //send disabled to Arduino
-            control.outlet[0].trigger = "Disabled";
-            control.outlet[0].state = 0;
-            control.outlet[0].name = document.getElementById("outletname1").value;
-            socket.emit('control update', control);
-        }
-
-        function select_disabled2()
-        {
-            //document.getElementById("screen_home").style.display = 'none';
-            document.getElementById("manual_hourly2").style.display = 'none';
-            document.getElementById("manual_disabled2").style.display = 'block';
-            document.getElementById("manual_button2").style.display = 'none';
-            //document.getElementById("outlet2_control").textContent = "Disabled";
-            //send disabled to Arduino
-            control.outlet[1].trigger = "Disabled";
-            control.outlet[1].state = 0;
-            control.outlet[1].name = document.getElementById("outletname2").value;
-            socket.emit('control update', control);
+            var outlet_number = document.getElementById("outlet_config").value;
+            document.getElementById("manual_hourly").style.display = 'none';
+            document.getElementById("manual_disabled").style.display = 'block';
+            document.getElementById("manual_button").style.display = 'none';
+            document.getElementById("manual_sensor").style.display = 'none';
+            control.outlet[outlet_number].trigger = "Disabled";
+            control.outlet[outlet_number].state = 0;
+            control.outlet[outlet_number].name = document.getElementById("outletname").value;
+            //socket.emit('control update', control);
         }
 
         function toggle_sound()
@@ -952,28 +863,6 @@
             }
         }
 
-        function setup_outlets()
-        {
-            /*
-            if (document.getElementById("outlet1_control").textContent === "Disabled")
-            //if (control.outlet[0].trigger = "Disabled")
-            {
-                select_disabled1();                
-            }
-            
-            if (document.getElementById("outlet1_control").textContent === "manualoff")
-            {
-                select_manual1();
-            }
-            
-            if (document.getElementById("outlet1_control").textContent === "manualon")
-            {
-                select_manual1();
-            }
-            */
-            
-        }
-
         function setup_maintmode()
         {
             if (document.getElementById("maintmode_status").textContent === "on")
@@ -987,36 +876,10 @@
             document.getElementById("maintmode_status").textContent = toggle;
         }
 
-        function setup_sensornames()
-        {
-            if (document.getElementById("sensorname1").value !== "")
-            {
-                document.getElementById("sensor1").textContent = document.getElementById("sensorname1").value;
-            }
-            /*fuck
-            if (document.getElementById("sensorname2").value !== null)
-            {
-                document.getElementById("sensor2").textContent = document.getElementById("sensorname2").value;
-            }
-            if (document.getElementById("sensorname3").value !== null)
-            {
-                document.getElementById("sensor3").textContent = document.getElementById("sensorname3").value;
-            }
-            if (document.getElementById("sensorname4").value !== null)
-            {
-                document.getElementById("sensor4").textContent = document.getElementById("sensorname4").value;
-            }
-            */
-        }
-
         refresh_warns();
-
-        setup_outlets();
 
         setup_maintmode();
 
-        setup_sensornames();
-    
         //alert("Setup complete.");
 
     </script>
@@ -1028,40 +891,37 @@
     .screen_home {
 	display: block;
     }
-    .outlet_status1 {
-	display: none;
-    }
     .warnings_page {
 	display: none;
     }
     .config_main {
 	display: none;
     }
-    .outlet_config1 {
-	display: none;
-    }
-    .outlet_config2 {
+    .outlet_config {
 	display: none;
     }
     .sensor_list {
 	display: none;
     }
-    .config_sensor1 {
+    .config_sensor {
 	display: none;
     }
     #warnings_set {
     display: none;
     }
-    .manual_button1 {
+    .manual_button {
     display: none;
     }
-    .manual_disabled1 {
+    .manual_sensor {
     display: none;
     }
-    .manual_hourly1 {
+    .manual_disabled {
     display: none;
     }
-    .mbutton1 {
+    .manual_hourly {
+    display: none;
+    }
+    .mbutton {
     display: block;
     }
     .outlet1_control {
@@ -1103,14 +963,6 @@ body {
     width: 240px;
     background-color: #cccccc;
 }
-.outlet_status1 {
-    margin: auto;
-    margin-top: 100px;
-    border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
-    background-color: #cccccc;
-}
 .sensor_list {
     margin: auto;
     margin-top: 100px;
@@ -1119,15 +971,7 @@ body {
     width: 240px;
     background-color: #cccccc;
 }
-.outlet_config1 {
-    margin: auto;
-    margin-top: 100px;
-    border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    width: 240px;
-    background-color: #cccccc;
-}
-.outlet_config2 {
+.outlet_config {
     margin: auto;
     margin-top: 100px;
     border: 1px solid blue;
@@ -1151,7 +995,7 @@ body {
     width: 240px;
     background-color: #cccccc;
 }
-.config_sensor1 {
+.config_sensor {
     margin: auto;
     margin-top: 100px;
     border: 1px solid blue;
@@ -1165,12 +1009,6 @@ body {
 <!--
 <style>
 .screen_home {
-    margin: 0 20px 20px 0;
-    border: 1px solid blue;
-    padding: 5px 5px 5px 5px;
-    
-}
-.outlet_status1 {
     margin: 0 20px 20px 0;
     border: 1px solid blue;
     padding: 5px 5px 5px 5px;
@@ -1277,10 +1115,10 @@ body {
         document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
         document.getElementById("tempreading").innerHTML = "Temperature: " + control.sensor[0].data + "°F";
 
-        console.log('dbutton1 innerhtml: ' + document.getElementById("dbutton1").innerHTML);
-        document.getElementById("dbutton1").innerHTML = control.outlet[0].trigger;
-        console.log('dbutton1: ' + control.outlet[0].trigger);
-        document.getElementById("dbutton2").innerHTML = control.outlet[1].trigger;
+        //console.log('dbutton1 innerhtml: ' + document.getElementById("dbutton1").innerHTML);
+        //document.getElementById("dbutton1").innerHTML = control.outlet[0].trigger;
+        //console.log('dbutton1: ' + control.outlet[0].trigger);
+        //document.getElementById("dbutton2").innerHTML = control.outlet[1].trigger;
 
         for (var i = 0, len = control.warning.length; i < len; i++) 
         {
@@ -1327,7 +1165,6 @@ body {
     socket.on('sensor update', function(msg)
     {
         document.getElementById("sensor1").innerHTML = control.sensor[0].name + " : " + control.sensor[0].data;
-        //document.getElementById("sensorname1").innerHTML = control.sensor[0].name + ": " + control.sensor[0].data;
         document.getElementById("sensor2").innerHTML = control.sensor[1].name + " : " + control.sensor[1].data;
         document.getElementById("sensor3").innerHTML = control.sensor[2].name + " : " + control.sensor[2].data;
         document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
