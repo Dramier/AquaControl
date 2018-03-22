@@ -31,9 +31,13 @@ var port = 3000;
 //    config setting for true/false on whether to have audible alarms
 //uptime
 //    setting for when the server started to display uptime
+//setup
+//    1 - server not active, user is defining settings
+//    0 - server is active, setup is complete
 
 //outlet:
 //    trigger - disabled, manual, schedule, sensor
+//              ignored - not installed at all, so don't even look at it
 //    trigger name - name of the thing that controls it
 //    schedule - 24 variables that state on or off through hours 0 to 23
 //    current state - on or off
@@ -46,6 +50,7 @@ var port = 3000;
 //warning
 //    text - the text of the warning
 //    type - 0 - none, 1 - temp low, 2 - temp high, 3 through 8 - outlet 1 to 6 failure, 9 through 12 - sensor 1 to 4 failure
+//    status - disabled, enabled, ignored
 
 global.current_time = new Date();
 console.log("Current time: " + current_time.getHours() + ":" + current_time.getMinutes());
@@ -53,54 +58,61 @@ console.log("Current time: " + current_time.getHours() + ":" + current_time.getM
 var control = {
   "sound": 0,
   "uptime": 0,
+  "setup": 1,
   
   "outlet": 
   [ 
     {
-      "trigger": "Manual",
+      "trigger": "Ignored",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
+      "runtime": 3600,
       "name" : "Outlet 1",
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-    "trigger": "Manual",
+    "trigger": "Ignored",
     "triggername" : "none",
     "triggersensor": 0,
     "state" : 0,
+    "runtime": 3600,
     "name" : "Outlet 2",
     "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "Manual",
+      "trigger": "Ignored",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
+      "runtime": 3600,
       "name" : "Outlet 3",
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "Manual",
+      "trigger": "Ignored",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
+      "runtime": 3600,
       "name" : "Outlet 4",
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "Manual",
+      "trigger": "Ignored",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
+      "runtime": 3600,
       "name" : "Outlet 5",
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
     {
-      "trigger": "Manual",
+      "trigger": "Ignored",
       "triggername" : "none",
       "triggersensor": 0,
       "state" : 0,
+      "runtime": 3600,
       "name" : "Outlet 6",
       "sched": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     } 
@@ -109,32 +121,36 @@ var control = {
   [
     {
       "name" : "Sensor 1",
-      "status": "Disabled",
+      "status": "Ignored",
       "data" : 82,
+      "interval": 0,
       "datatype" : "Temperature",
       "lowtrigger" : 50,
       "hightrigger" : 150
     },
     {
       "name" : "Sensor 2",
-      "status": "Disabled",
+      "status": "Ignored",
       "data" : 0,
+      "interval": 0,
       "datatype" : "none",
       "lowtrigger" : 0,
       "hightrigger" : 0
     },
     {
       "name" : "Sensor 3",
-      "status": "Disabled",
+      "status": "Ignored",
       "data" : 0,
+      "interval": 0,
       "datatype" : "none",
       "lowtrigger" : 0,
       "hightrigger" : 0
     },
     {
       "name" : "Sensor 4",
-      "status": "Disabled",
+      "status": "Ignored",
       "data" : 0,
+      "interval": 0,
       "datatype" : "none",
       "lowtrigger" : 0,
       "hightrigger" : 0
@@ -220,6 +236,13 @@ app.get('/pc', function(req, res){
   res.sendFile(__dirname + '/public/homepc.htm');
 });
 
+app.get('/setup', function(req, res){
+  console.log('URL setup: Incoming connection.');
+  console.log('-----------------------------');
+  
+  res.sendFile(__dirname + '/public/setup.htm');
+});
+
 io.on('connection', function(socket){
   console.log('a user connected');
   console.log('-----------------------------');
@@ -268,6 +291,26 @@ io.on('connection', function(socket){
     //var remove = control.warning.pop();
     //}
     control.warning = [{"text" : "none", "type": 0}];
+    //socket.emit('control update', control);
+  });
+
+  socket.on('setup', function(msg){
+    //console.log('message: ' + msg);
+    control = msg;
+    console.log('Setup function called!');
+    console.log('-----------------------------');
+    control.warning.length = 0;
+    //for (var i = 0, len = control.warning.length; i < len; i++) 
+    //{
+    //var remove = control.warning.pop();
+    //}
+    control.warning = [{"text" : "none", "type": 0}];
+
+    //make sure all GPIO pins get turned off
+    //clear the control to defaults
+    control = default_config;
+    //delete the config file
+
     //socket.emit('control update', control);
   });
 

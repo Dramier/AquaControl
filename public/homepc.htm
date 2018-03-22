@@ -20,6 +20,8 @@
 		});
 
     var control = {"sound":0,"uptime":"2018-03-14T20:21:39.806Z","outlet":[{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 1","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 2","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 3","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 4","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 5","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 6","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}],"sensor":[{"name":"Success","data":0},{"name":"Sensor 2","data":0},{"name":"Sensor 3","data":0},{"name":"Sensor 4","data":0}]};
+    var debug = 1; //if 0 no console.logs, if 0 then console.logs are on
+    
 </script>
 
 <!-- <img class="img-responsive" src="/images/background1.jpg" alt="background1.jpg"> -->
@@ -119,22 +121,31 @@
     <br>
     <div class="row">
         <div class="col">
+            <button type="button" class="btn btn-danger" onclick="run_setup()">RUN SETUP</button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
             <button type="button" class="btn btn-warning" onclick="reset_server()">RESET</button>
             <button type="button" class="btn btn-info" onclick="go_home()">Home</button>
         </div>
     </div>
     
-
 </div>
 
 <!-- Outlet Config -->
 <div class="outlet_config" id="outlet_config" value=0>
     <div class="outlet_control" id="outlet_control"></div>
     <p>Outlet Config</p>
-    <p id="outlet_config_name">Unknown Device</p>
+    <!--<p id="outlet_config_name">Unknown Device</p>-->
     <div class="form-group">
         <label for="outletname">Device Name:</label>
         <input type="text" class="form-control" id="outletname">
+    </div>
+    <div class="form-group" id="runtime">
+        <label for="outletname">Runtime seconds <br> (0 for always on):</label>
+        <input type="text" class="form-control" id="runtime_amount">
     </div>
     <div class="dropdown">
         <button type="button" id="dbutton" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -343,6 +354,10 @@
         <label for="hightrigger">High Trigger:</label>
         <input type="text" class="form-control" id="hightrigger">        
     </div>
+    <div class="form-group" id="interval">
+        <label for="outletname">Interval seconds <br> (minimum 4 seconds):</label>
+        <input type="text" class="form-control" id="interval_amount">
+    </div>
     <div class="row">
         <div class="col">
             <button type="button" class="btn btn-info" onclick="submit_sensor_config();go_home();go_sensor_list()">Back</button>
@@ -354,29 +369,62 @@
 
 </div>
 
+<!-- Setup Complete Screen -->
+<div class="config_setup" id="config_setup">
+    <p>Server is NOT active!</p>
+    <p>Click button when setup is finished!</p>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-success" id="sound" onclick="complete_setup()">FINISH</button>
+        </div>
+    </div>
+</div>
+
 <!-- Control Functions -->
 <script>
         function reset_server()
         {
             socket.emit('reset', control);
         }
+
+        function run_setup()
+        {
+            control.setup = 1;
+            socket.emit('setup', control);
+            window.location.href = "http://localhost:3000/setup";
+        }
+
+        function complete_setup()
+        {
+            control.setup = 0;
+            socket.emit('control update', control);
+            go_home();
+        }
         
         //When user clicks HOME, submit the sensor configuration information to the server.
         function submit_sensor_config()
         {
-            console.log('Submit sensor config called.');
+            if (debug == 1)
+                console.log('Submit sensor config called.');
             var sensor_number = document.getElementById("config_sensor").value;
             control.sensor[sensor_number].name = document.getElementById("sensorname").value;
             control.sensor[sensor_number].lowtrigger = document.getElementById("lowtrigger").value;
             control.sensor[sensor_number].hightrigger = document.getElementById("hightrigger").value;
             control.sensor[sensor_number].datatype = document.getElementById("datatype").value;
+            if (document.getElementById("interval_amount").value < 4)
+                document.getElementById("interval_amount").value = 4;
+            if (document.getElementById("interval_amount").value > 3600)
+                document.getElementById("interval_amount").value = 3600;
+
+            control.sensor[sensor_number].interval = document.getElementById("interval_amount").value;
             
             socket.emit('control update', control);
         }
 
         function submit_outlet_config()
         {
-            console.log('Submit outlet config called.');
+            if (debug == 1)
+                console.log('Submit outlet config called.');
             var outlet_number = document.getElementById("outlet_config").value;
             control.outlet[outlet_number].sched[0] = document.getElementById("hour0").checked;
             control.outlet[outlet_number].sched[1] = document.getElementById("hour1").checked;
@@ -403,13 +451,19 @@
             control.outlet[outlet_number].sched[22] = document.getElementById("hour22").checked;
             control.outlet[outlet_number].sched[23] = document.getElementById("hour23").checked;
             control.outlet[outlet_number].name = document.getElementById("outletname").value;
+            control.outlet[outlet_number].runtime = document.getElementById("runtime_amount").value;
             socket.emit('control update', control);
 
         }
 
         function go_home()
         {
-            console.log('Go home called.');
+            if (debug == 1)
+                console.log('Go home called.');
+
+            document.getElementById("config_setup").style.display = 'none';    
+
+            
             document.getElementById("warnings_page").style.display = 'none';
             document.getElementById("config_main").style.display = 'none';
     
@@ -421,6 +475,9 @@
             
             refresh_warns();
             document.getElementById("screen_home").style.display = 'block';
+
+            if (control.setup == 1)
+                document.getElementById("config_setup").style.display = 'block';    
 
             
 
@@ -443,10 +500,16 @@
     
         function go_sensor_list()
         {
-            console.log('Go sensor list called.');
+            if (debug == 1)
+                console.log('Go sensor list called.');
+            
+                
+            document.getElementById("config_setup").style.display = 'none';    
+
             if (control.sensor[0].status == "Disabled")
             {
-                console.log('Sensor 1 is disabled.');
+                if (debug == 1)
+                    console.log('Sensor 1 is disabled.');
                 $("#sensor1").removeClass("btn btn-danger");
                 $("#sensor1").removeClass("btn btn-success");
                 $("#sensor1").removeClass("btn btn-info");
@@ -455,7 +518,8 @@
             }
             else 
             {
-                console.log('Sensor 1 is NOT disabled.');
+                if (debug == 1)
+                    console.log('Sensor 1 is NOT disabled.');
                 if ((control.sensor[0].data >= control.sensor[0].lowtrigger) && (control.sensor[0].data <= control.sensor[0].hightrigger))
                 {
                     $("#sensor1").removeClass("btn btn-danger");
@@ -598,13 +662,18 @@
             document.getElementById("sensor4").innerHTML = control.sensor[3].name + " : " + control.sensor[3].data;
 
             document.getElementById("screen_home").style.display = 'none';
+            document.getElementById("config_setup").style.display = 'none';    
             document.getElementById("sensor_list").style.display = 'block';
+
+            if (control.setup == 1)
+                document.getElementById("config_setup").style.display = 'block';    
         }
     
     
         function go_outlet_config(outlet_number) 
         {
-            console.log('Go outlet config called.');
+            if (debug == 1)
+                console.log('Go outlet config called.');
             go_home();
             document.getElementById("outlet_config").value = outlet_number;
             document.getElementById("screen_home").style.display = 'none';
@@ -612,6 +681,7 @@
             document.getElementById("manual_disabled").style.display = 'none';
             document.getElementById("manual_button").style.display = 'none';
             document.getElementById("manual_sensor").style.display = 'none';
+            document.getElementById("config_setup").style.display = 'none';    
             
             if (control.outlet[outlet_number].state == 0)
             {
@@ -630,7 +700,7 @@
             document.getElementById("controltext").innerHTML = "Controlled by " + control.sensor[control.outlet[outlet_number].triggersensor].name;
 
             
-            document.getElementById("outlet_config_name").innerHTML = control.outlet[outlet_number].name;
+            //document.getElementById("outlet_config_name").innerHTML = control.outlet[outlet_number].name;
             document.getElementById("outletname").value = control.outlet[outlet_number].name;
 
             document.getElementById("hour0").checked = control.outlet[outlet_number].sched[0];
@@ -660,26 +730,41 @@
 
             if (control.outlet[outlet_number].trigger == "Disabled")
             {
-                console.log('Disabled shown.');
+                if (debug == 1)
+                    console.log('Disabled shown.');
+                document.getElementById("runtime").style.display = 'none';
                 document.getElementById("manual_disabled").style.display = 'block';
             }
             if (control.outlet[outlet_number].trigger == "Manual")
             {
-                console.log('Manual shown.');
+                if (debug == 1)
+                    console.log('Manual shown.');
+                document.getElementById("runtime").style.display = 'none';
                 document.getElementById("manual_button").style.display = 'block';
             }
             if (control.outlet[outlet_number].trigger == "Hourly")
             {
-                console.log('Hourly shown.');
+                if (debug == 1)
+                    console.log('Hourly shown.');
+                document.getElementById("runtime").style.display = 'block';
                 document.getElementById("manual_hourly").style.display = 'block';
             }
             if (control.outlet[outlet_number].trigger == "Sensor")
             {
-                console.log('Sensor shown.');
+                if (debug == 1)
+                    console.log('Sensor shown.');
+                document.getElementById("runtime").style.display = 'block';
                 document.getElementById("manual_sensor").style.display = 'block';
             }
+            
+            
 
             document.getElementById("outlet_config").style.display = 'block';
+
+            if (control.setup == 1)
+                document.getElementById("config_setup").style.display = 'block';    
+            
+            
         }
 
         function select_control_sensor(sensor_number)
@@ -693,7 +778,8 @@
 
         function go_config_main()
         {
-            console.log('Go config main called.');
+            if (debug == 1)
+                console.log('Go config main called.');
             go_home();
             document.getElementById("screen_home").style.display = 'none';
             document.getElementById("config_main").style.display='block';
@@ -701,7 +787,8 @@
     
         function go_config_sensor(sensor_number)
         {
-            console.log('Go config sensor called.');
+            if (debug == 1)
+                console.log('Go config sensor called.');
             go_home();
             document.getElementById("sensorname").value = control.sensor[sensor_number].name;
             document.getElementById("lowtrigger").value = control.sensor[sensor_number].lowtrigger;
@@ -712,13 +799,15 @@
             
             if (control.sensor[sensor_number].status === 'Disabled')
             {
-                console.log('Button is disabled.');
+                if (debug == 1)
+                    console.log('Button is disabled.');
                 $('#sbutton').removeClass("btn btn-success").addClass("btn btn-danger");
                 document.getElementById('sbutton').innerHTML = "Disabled";
             }
             else
             {
-                console.log('Button is enabled.');
+                if (debug == 1)
+                    console.log('Button is enabled.');
                 $('#sbutton').removeClass("btn btn-danger").addClass("btn btn-success");
                 document.getElementById('sbutton').innerHTML = "Enabled";
             }
@@ -727,7 +816,8 @@
     
         function go_warnings_page()
         {
-            console.log('Go warnings page called.');
+            if (debug == 1)
+                console.log('Go warnings page called.');
             go_home();
             document.getElementById("screen_home").style.display = 'none';
             document.getElementById("warnings_page").style.display='block';
@@ -741,6 +831,7 @@
             document.getElementById("manual_disabled").style.display = 'none';
             document.getElementById("manual_button").style.display = 'none';
             document.getElementById("manual_sensor").style.display = 'none';
+            document.getElementById("runtime").style.display = 'block';
             //document.getElementById("outlet1_control").textContent = "hourly";
             control.outlet[outlet_number].trigger = "Hourly";
             control.outlet[outlet_number].state = 0;
@@ -750,9 +841,11 @@
 
         function select_sensor()
         {
-            console.log('Select sensor called.');
+            if (debug == 1)
+                console.log('Select sensor called.');
             var outlet_number = document.getElementById("outlet_config").value;
             //document.getElementById("screen_home").style.display = 'none';
+            document.getElementById("runtime").style.display = 'block';
             document.getElementById("manual_hourly").style.display = 'none';
             document.getElementById("manual_disabled").style.display = 'none';
             document.getElementById("manual_button").style.display = 'none';
@@ -782,9 +875,11 @@
 
         function toggle_sbutton()
         {
-            console.log('Toggle sbutton called.');
+            if (debug == 1)
+                console.log('Toggle sbutton called.');
             var ref_sensor = document.getElementById("config_sensor").value;
-            console.log('Ref sensor = ' + ref_sensor);
+            if (debug == 1)
+                console.log('Ref sensor = ' + ref_sensor);
             var btnclassName = $('#sbutton').attr('class');
             //if (btnclassName == "btn btn-success")
             if (control.sensor[ref_sensor].status == "Enabled")
@@ -808,12 +903,15 @@
 
         function toggle_mbutton()
         {
-            console.log('Toggle mbutton called.');
+            if (debug == 1)
+                console.log('Toggle mbutton called.');
             var outlet_number = document.getElementById("outlet_config").value;
             var btnclassName = $('#mbutton').attr('class');
             //if (btnclassName == "btn btn-success")
-            if (control.outlet[outlet_number].status == 1)
+            if (control.outlet[outlet_number].state == 1)
             {
+                if (debug == 1)
+                    console.log(outlet_number + ': Switching to disabled.');
                 $("#mbutton").removeClass("btn btn-success").addClass("btn btn-danger");
                 document.getElementById("mbutton").innerHTML = "Disabled";
                 control.outlet[outlet_number].state = 0;
@@ -821,8 +919,10 @@
                 socket.emit('control update', control);
 
             }
-            else
+            else 
             {
+                if (debug == 1)
+                    console.log(outlet_number + ': Switching to enabled.');
                 $("#mbutton").removeClass("btn btn-danger").addClass("btn btn-success");
                 document.getElementById("mbutton").innerHTML = "Enabled";
                 control.outlet[outlet_number].state = 1;
@@ -835,6 +935,7 @@
         {
             //document.getElementById("screen_home").style.display = 'none';
             var outlet_number = document.getElementById("outlet_config").value;
+            document.getElementById("runtime").style.display = 'none';
             document.getElementById("manual_hourly").style.display = 'none';
             document.getElementById("manual_disabled").style.display = 'block';
             document.getElementById("manual_button").style.display = 'none';
@@ -897,6 +998,9 @@
     .config_main {
 	display: none;
     }
+    .config_setup {
+	display: none;
+    }
     .outlet_config {
 	display: none;
     }
@@ -923,6 +1027,9 @@
     }
     .mbutton {
     display: block;
+    }
+    .runtime {
+    display: none;
     }
     .outlet1_control {
     display: none;
@@ -996,6 +1103,14 @@ body {
     background-color: #cccccc;
 }
 .config_sensor {
+    margin: auto;
+    margin-top: 100px;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    width: 240px;
+    background-color: #cccccc;
+}
+.config_setup {
     margin: auto;
     margin-top: 100px;
     border: 1px solid blue;
@@ -1132,8 +1247,10 @@ body {
             {
                 //fuck
                 //<button type="button" class="close" data-dismiss="alert">&times;</button>
-                console.log('Warning rxd from server.');
-                console.log('Warning: ' + control.warning[i].text);
+                if (debug == 1)
+                    console.log('Warning rxd from server.');
+                if (debug == 1)
+                    console.log('Warning: ' + control.warning[i].text);
                 var output = document.getElementById("warnings_page");
                 var ele = document.createElement("div");
                 ele.setAttribute("class","alert alert-danger alert-dismissable fade show");
@@ -1159,6 +1276,9 @@ body {
         }
 
         refresh_warns();
+
+        if (control.setup == 1)
+            document.getElementById("config_setup").style.display = 'block';    
         
     });
 

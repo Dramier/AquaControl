@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Aqua Control</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body onload="JavaScript:AutoRefresh(5000);">
+    <!--<body>-->
+<script>
+    //const socket = io();
+
+    const socket = io('localhost:3000', {
+			path: '/socket.io'
+		});
+
+    var control = {"sound":0,"uptime":"2018-03-14T20:21:39.806Z", "setup": 1, "outlet":[{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 1","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 2","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 3","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 4","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 5","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"trigger":"Manual","triggername":"none","state":0,"name":"Outlet 6","sched":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}],"sensor":[{"name":"Success","data":0},{"name":"Sensor 2","data":0},{"name":"Sensor 3","data":0},{"name":"Sensor 4","data":0}]};
+</script>
+
+<!-- <img class="img-responsive" src="/images/background1.jpg" alt="background1.jpg"> -->
+
+<!-- Screen Layouts -->
+
+
+<!-- Config Numbers -->
+<div class="config_page1" id="config_page1" value=0>
+    <div class="form-group">
+        <label for="number_outlets">Number of Outlets to Control (Max: 6): </label>
+        <input type="text" class="form-control" id="number_outlets">
+    </div>
+    <div class="form-group">
+            <label for="number_sensors">Number of Sensors to Monitor (Max: 4):</label>
+            <input type="text" class="form-control" id="number_sensors"> 
+        </div>
+        <button type="button" class="btn btn-success" id="sound" onclick="toggle_sound()">Sound</button>
+        <br><br>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-info" onclick="submit_config_page1()">Next</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Control Functions -->
+<script>
+        
+        
+        //When user clicks HOME, submit the sensor configuration information to the server.
+        function submit_config_page1()
+        {
+            console.log('Submit config page 1 called.');
+            control.setup = 1;
+            //detect how many outlets are installed
+            //set each outlet that is present to "Disabled"
+            //set each outlet that is NOT present to "Ignored"
+            var ref_outlets = document.getElementById("number_outlets").value;
+            if (ref_outlets < 0)
+            {
+                //need error message here
+            }
+            if (ref_outlets > 6)
+            {
+                ref_outlets = 6;
+            }
+            for (var outlet = 0; outlet < ref_outlets; outlet++)
+            {
+                control.outlet[outlet].trigger = "Disabled";
+            }
+
+            //detect how many sensors are installed
+            //set each sensor that is present to "Disabled"
+            //set each sensor that is NOT present to "Ignored"
+            var ref_sensors = document.getElementById("number_sensors").value;
+            if (ref_sensors < 0)
+            {
+                //need error message here
+            }
+            if (ref_sensors > 4)
+            {
+                ref_sensors = 4;
+            }
+            for (var outlet = 0; outlet < ref_outlets; outlet++)
+            {
+                control.outlet[outlet].trigger = "Disabled";
+            }
+            
+            
+
+            //var sensor_number = document.getElementById("config_sensor").value;
+            //control.sensor[sensor_number].name = document.getElementById("sensorname").value;
+            //control.sensor[sensor_number].lowtrigger = document.getElementById("lowtrigger").value;
+            //control.sensor[sensor_number].hightrigger = document.getElementById("hightrigger").value;
+            //control.sensor[sensor_number].datatype = document.getElementById("datatype").value;
+            
+            socket.emit('control update', control);
+
+            window.location.href = "http://localhost:3000/pc";
+        }
+
+        function toggle_sound()
+        {
+            var btnclassName = $('#sound').attr('class');
+            if (btnclassName === "btn btn-success")
+            {
+                $("#sound").removeClass("btn btn-success").addClass("btn btn-danger");
+                control.sound = 0;
+                //socket.emit('control update', control);
+
+            }
+            else
+            {
+                $("#sound").removeClass("btn btn-danger").addClass("btn btn-success");
+                control.sound = 1;
+                //socket.emit('control update', control);
+            }
+        }
+
+        
+
+    </script>
+
+
+<!-- Style Display Hiders -->
+
+<style>
+    
+    .config_page1 {
+	display: block;
+    }
+</style>
+
+<!--
+<style>
+.screen_home {
+    float: left;
+    margin: 0 20px 20px 0;
+    border: 1px solid blue;
+    padding: 0 5px 0 5px;
+    width: 240px;
+}
+</style>
+-->
+
+<!-- Style Definitions -->
+
+
+
+<style>
+body {
+    background-image: url("images/background1.jpg");
+    background-color: #cccccc;
+    background-blend-mode: darken;
+    background-size: cover;
+}
+.config_page1 {
+    margin: auto;
+    margin-top: 100px;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    width: 240px;
+    background-color: #cccccc;
+}
+</style>
+
+
+<!--
+<style>
+.screen_home {
+    margin: 0 20px 20px 0;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    
+}
+.sensor_list {
+    margin: 0 20px 20px 0;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    
+}
+.outlet_config1 {
+    margin: 0 20px 20px 0;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    
+}
+.warnings_page {
+    margin: 0 20px 20px 0;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    
+}
+.config_main {
+    margin: 0 20px 20px 0;
+    border: 1px solid blue;
+    padding: 5px 5px 5px 5px;
+    
+}
+</style>
+-->
+
+
+<script>
+
+    socket.on('setup', function(msg)
+    {
+        control = msg;
+    });
+
+    socket.on('control update', function(msg)
+    {
+        control = msg;
+        //console.log(msg);
+
+    });
+
+    socket.on('sensor update', function(msg)
+    {
+        //console.log(msg);
+    });
+
+    socket.on('warning', function(msg)
+    {
+        control = msg;
+            
+        
+        //location.reload(true);
+
+    });
+
+
+</script>
+
+<script type="text/JavaScript">
+    //<!--
+        function update()
+        {
+            socket.emit('update', 'fetch update requested from web');
+        }
+
+       function AutoRefresh( t ) 
+       {
+          setInterval(update, t);
+       }
+    //-->
+ </script>
+
+</body>
+</html>

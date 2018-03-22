@@ -118,167 +118,7 @@ Possibles:
 1x regulator AC to DC for Arduino - $7.65
 
 
-Used to load another page, might be really useful for sensors, etc:
-function load_home() {
-     document.getElementById("content").innerHTML='<object type="text/html" data="home.html" ></object>';
-}
-
-
-
-
-
-
-
-Bit value assigned to each outlet:
-Outlet 1: 1
-Outlet 2: 2
-Outlet 3: 4
-Outlet 4: 8
-Outlet 5: 16
-
-1,2 = 3
-1,3 = 5
-1,4 = 9
-1,5 = 17
-1,2,3 = 7
-1,2,3,4 = 15
-1,2,3,4,5 = 31
-1,2,4 = 11
-1,2,4,5 = 27
-So this works, through math can work out which sensors should be turned on using just one array for hourly schedule.
-
-
-
-
-27 - 16 = 11 so 5 is true
-11 - 8 = 3 so 4 is true
-can't subtract 3 so false on 3
-3 - 2 = 1 so 2 is true
-1 - 1 = 0 so 1 is true
-
-hourly schedule figuring out which relays to do:
-if (value - 16) >= 0 then 
-	5 = true
-	value = value - 16
-if (value - 8) >= 0 then
-	4 = true
-	value = value - 8
-if (value - 4) >= 0 then
-	3 = true
-	value = value - 4
-if (value - 2) >= 0 then
-	2 = true
-	value = value - 2
-if (value - 1) >= 0 then
-	1 = true
-	value = value - 1
-done
-
-
-
-
-
-
-
-
-Home Screen:
-	Tank temperature
-	Current status of each outlet
-	Maintenance Mode indicator
-	Current time (and date?)
-	Warnings notification
-	Sensors button
-	Config button
-	
-Notes:
-	Clicking on outlet icons goes to that outlet's config page
-	Clicking on warnings notification goes to warning page and allows clearing of warnings
-	Clicking on config button goes to main config page
-	Clicking on sensors button goes to sensor list page
-	
-Outlet status page:
-	Shows device name
-	Shows current status ON/OFF
-	Config button when clicked goes to scheduling setup
-	Toggle on/off button 
-
-Warnings notification page:
-	Shows list of warnings
-	Click on notification prompts a delete yes/no prompts
-	Clear all button
-	Home button
-	
-Main Config page:
-	Set Celsius/Fahrenheit for temp display
-	Turn on/off alarm speaker
-	Set date/time manually
-	Download sensor logging
-	Download website config
-	Reset button that resets entire setup with warning confirmation prompts
-	Displays current IP
-	Displays uptime
-	
-Outlet Config Page:
-	Display name
-	Four buttons displayed: Disabled, Manual, Hourly, Sensor.  Currently selected in color, others in grayscale
-	Selecting Hourly adds icon to click for scheduling menu
-	Selecting Sensor adds icon to click for sensor menu
-	
-Sensors List page:
-	Lists all sensors connected
-	Clicking on sensor goes to sensor config page
-	
-Sensor Config Page:
-	Display current sensor name
-	Display current reading
-	Toggle icon for disable/enabled
-	Minimum value entry
-	Maximum value entry
-	Low value warning
-	High value warning
-	Enable/disable warning notifications
-	Save/load config buttons
-	
-Outlet Config->Scheduling menu page:
-	How to set this up?
-	
-Outlet Config->Sensor Menu page:
-	Four buttons with each sensor listed as a 1,2,3,4 icon
-	Entry for value to turn on at
-	Entry for value to turn off at
-	Warning notification enable/disable
-	
-	
-	
-	
-
-
-New Menu ToDo:
-	Outlet control by sensor
-	Home screen:
-		Temperature display
-		Current date and time
-		Outlets color coded based on whether they are on or not
-		Labels on outlets?
-	Main Settings:
-		Display current time on Arduino
-		Display uptime
-		Sound button toggle
-		Set time function
-		DL Log function
-		DL Config function
-		Reset function
-	
-	Transmit settings to Arduino
-	Receive settings from Arduino
-	Receive inital setup from Arduino on first load
-	Test one outlet, one sensor, etc with actual Arduino running
-	When all bugs are eliminated, add one outlet
-	Re-test, when all bugs gone, then copy-paste all outlets and sensors
-	
-	
-
-
+Webpage:
 
 DONE - Setup variables to hold current aquarium setup in NodeJS.
 DONE - Setup socket.connection to send those variables to the website.
@@ -297,31 +137,52 @@ Complete the sensors page.
 	DONE - Good readings in green.
 	DONE - Too high readings in red.
 	DONE - Disabled sensors in grey. 
+	DONE - Add interval check time of each sensor with default and minimum.
+
+Complete the outlet config page.
+	DONE - Add length of time to run device when on.  Default is one hour.
 
 Complete the settings page.
+	Add upload config file functionality.
+	Add DL config file function.
+	Add DL logs file function.
+	Add clear logs file function.
+
+DONE - Add control for setup sequence - displays special box with button to "Complete Setup" that turns everything on.
 
 Add the sensor dropdown to outlet configs.
 	DONE - Dropdown menu of enabled sensors.
-	Add sensor based checks to server.
-
-
+	
+DONE - Add debug setting.
+	If on, console.logs are executed.
+	If off, no console.logs.
 
 Make an initial setup page and add a link to it to the settings page.
-	First page asks how many outlets will be used.
-	Second page asks how many sensors will be used.
-	Third page asks for names and setup of the outlets in sequence.
-	Fourth page does the same for sensors.
-	Fifth page asks for sound settings.
-	Sixth page asks any remaining questions.
-	Last page has button for each of the six pages to return to it, and a confirm and cancel buttons.
-		The cancel button will goto a blank page which says come back when ready.
-		Confirm sends the config to the server and saves it.
-		Any page selection just goes to the specific page and then returns.
+	DONE - Number of outlets to enable.
+	DONE - Number of sensors to enable.
+	DONE - Sound on/off.
 
 
 
-	
-	
+
+Server:
+	On load - check for config file present.
+		-If present, load and start server monitoring.
+		-If not present, disable server monitoring, load default settings, setup an audible alarm that pings.
+	Add sound controller function.
+		If sound is enabled, controller should beep when warnings are present.
+	Server reads sensors from pins.
+	Server sends warnings based on triggers.
+	Server monitors outlets based on triggers.
+	Server checks for existing CFG file, if not found directs first website visit to configuration.
+	If configuration mode is entered and file is uploaded parse the file and confirm success.
+		If not successful, prompt user to resubmit or do the configuration.
+	Reset function should delete the config file and set the setup variable to 'on'.
+	Add config file loading from website.
+	Add logging to file.
+	Add debug setting.
+		If on, console.logs are executed.
+		If off, no console.logs.
 
 
 
