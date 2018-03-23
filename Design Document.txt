@@ -166,24 +166,25 @@ Make an initial setup page and add a link to it to the settings page.
 
 
 Server:
-	On load - check for config file present.
-		-If present, load and start server monitoring.
-		-If not present, disable server monitoring, load default settings, setup an audible alarm that pings.
-	Add sound controller function.
-		If sound is enabled, controller should beep when warnings are present.
+	DONE - On load - check for config file present.
+		DONE -If present, load and start server monitoring.
+		DONE - If not present, disable server monitoring, load default settings.
+	DONE - Add sound controller function.
+		DONE - If sound is enabled, controller should beep when warnings are present.
 	Server reads sensors from pins.
-	Server sends warnings based on triggers.
-	Server monitors outlets based on triggers.
-	Server checks for existing CFG file, if not found directs first website visit to configuration.
+	Server logs warnings based on triggers.
+	DONE - Server monitors outlets based on triggers.
+		Add code to turn on/off physical devices.
+	DONE - Server checks for existing CFG file, if not found directs first website visit to configuration.
 	If configuration mode is entered and file is uploaded parse the file and confirm success.
 		If not successful, prompt user to resubmit or do the configuration.
-	Reset function should delete the config file and set the setup variable to 'on'.
+	DONE - Reset function should delete the config file and set the setup variable to 'on'.
 	Add config file loading from website.
 	Add logging to file.
 	Add debug setting.
 		If on, console.logs are executed.
 		If off, no console.logs.
-
+	Add winston logging to file of key functions.
 
 
 

@@ -13,6 +13,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
+//var winston = require('winston');
 
 const path = require('path');
 
@@ -53,7 +54,58 @@ var port = 3000;
 //    status - disabled, enabled, ignored
 
 global.current_time = new Date();
+var current_month = (current_time.getMonth() + 1);
+var current_day = current_time.getDate();
+var current_year = current_time.getFullYear();
 console.log("Current time: " + current_time.getHours() + ":" + current_time.getMinutes());
+
+logfile = current_month + "-" + current_day + "-" + current_year + ".log";
+
+var winston = require('winston');
+//logger.add(logger.transports.File, { filename: logfile });
+
+var config = winston.config;
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({
+      timestamp: function() {
+        return Date.now();
+      },
+      formatter: function(options) {
+        // - Return string will be passed to logger.
+        // - Optionally, use options.colorize(options.level, <string>) to
+        //   colorize output based on the log level.
+        return options.timestamp() + ' ' +
+          winston.config.colorize(options.level, options.level.toUpperCase()) + ' ' +
+          (options.message ? options.message : '') +
+          (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
+      }
+    }),
+    new (winston.transports.File)({
+      filename: logfile,
+      timestamp: function() {
+        return Date.now();
+      },
+      formatter: function(options) {
+        // - Return string will be passed to logger.
+        // - Optionally, use options.colorize(options.level, <string>) to
+        //   colorize output based on the log level.
+        return options.timestamp() + ' ' +
+          winston.config.colorize(options.level, options.level.toUpperCase()) + ' ' +
+          (options.message ? options.message : '') +
+          (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
+      }
+    })
+  ]
+});
+//logger.add(logger.transports.Console);
+
+logger.log('info', 'Logger started.');
+
+
+//winston.add(winston.transports.File, { filename: logfile });
+
+
 
 var control = {
   "sound": 0,
@@ -162,11 +214,8 @@ var control = {
 //setup a default config for the reset function
 var default_config = control;
 
-//console.log('Control: ');
-//console.log(JSON.stringify(control));
-
 //Save the config file - REMOVE IN DEPLOYMENT!
-var savefile = 1;
+var savefile = 0;
 if (savefile === 1)
 {
   console.log('Creating setup.json.');
@@ -178,40 +227,56 @@ if (savefile === 1)
 }
 
 //Load the config file
-console.log('-----------------------------');
-console.log('Aqua Control booting...');
-console.log('-----------------------------');
+logger.log('server','Aqua Control booting...');
+//console.log('-----------------------------');
+//console.log('');
+//console.log('-----------------------------');
 
-var config = require('./setup.json');
-control = config;
-console.log('INI Loaded.');
 
-console.log('-----------------------------');
+
+try {
+  var config = require('./setup.json');
+}
+
+catch(error)
+{
+  logger.log('error',error);
+  
+  control = default_config;
+}
+
+if (control.setup != 1)
+{
+  control = config;
+  logger.log('server','Config loaded.');
+  
+}
+else
+{
+  logger.log('error','Config not found.  Defaulting to Setup.');
+  
+}
 
 control.uptime = current_time;
 
-console.log('-----------------------------');
+logger.log('server','Server started.');
 
-console.log("Server start time: " + control.uptime.getHours() + ":" + control.uptime.getMinutes());
-
-console.log('-----------------------------');
 
 for (i in control.outlet) {
-  console.log("Outlet #" + i + " Name: " + control.outlet[i].name);
+  logger.log('server',"Outlet #" + i + " Name: " + control.outlet[i].name);
+  //console.log("Outlet #" + i + " Name: " + control.outlet[i].name);
 }
 
-console.log('-----------------------------');
+
 
 for (i in control.sensor) {
-  console.log("Sensor #" + i + " Name: " + control.sensor[i].name);
+  logger.log('server',"Sensor #" + i + " Name: " + control.sensor[i].name);
+  //console.log("Sensor #" + i + " Name: " + control.sensor[i].name);
 }
 
-console.log('-----------------------------');
-
-//console.log("Outlet 1: " + JSON.stringify(control.outlet[0].name));
-//console.log("Sensor 1: " + JSON.stringify(control.sensor[0]));
 
 
+Setup_Server();
 
 //************************Application Variables Ends */
 
@@ -223,35 +288,32 @@ app.use(express.static(path.join(__dirname, '/public')))
   
 
 app.get('/', function(req, res){
-  console.log('URL base: Incoming connection.');
-  console.log('-----------------------------');
+  logger.log('url','URL base: Incoming connection.');
   res.sendFile(__dirname + '/public/home.htm');
 
 });
 
 app.get('/pc', function(req, res){
-  console.log('URL pc: Incoming connection.');
-  console.log('-----------------------------');
+  logger.log('url','URL pc: Incoming connection.');
   
   res.sendFile(__dirname + '/public/homepc.htm');
 });
 
 app.get('/setup', function(req, res){
-  console.log('URL setup: Incoming connection.');
-  console.log('-----------------------------');
+  logger.log('url','URL setup: Incoming connection.');
   
   res.sendFile(__dirname + '/public/setup.htm');
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
-  console.log('-----------------------------');
+  logger.log('socket','User connected.');
   io.emit('control update', control);
 
   socket.on('update', function(msg){
-    console.log('message: ' + msg);
-    console.log('-----------------------------');
+    logger.log('socket','Control update.');
     socket.emit('control update', control);
+    if (control.warning.length > 0)
+      PlaySound();
     control.warning.length = 0;
     //for (var i = 0, len = control.warning.length; i < len; i++) 
     //{
@@ -262,12 +324,15 @@ io.on('connection', function(socket){
   });
 
   socket.on('reset', function(msg){
-    console.log('Reset requested.');
+    logger.log('socket','Reset requested.');
     control = default_config;
     SaveSettings();
-    ScheduleCheck();
-    SensorCheck();
-    WarningCheck();
+    if (control.setup == 0)
+    {
+      ScheduleCheck();
+      SensorCheck();
+      WarningCheck();
+    }
     socket.emit('control update', control);
     control.warning.length = 0;
     //for (var i = 0, len = control.warning.length; i < len; i++) 
@@ -276,15 +341,14 @@ io.on('connection', function(socket){
     //}
     control.warning = [{"text" : "none", "type": 0}];
     
-    console.log('Reset completed.');
-    console.log('-----------------------------');
+    logger.log('socket','Reset completed.');
+    
   });
 
   socket.on('control update', function(msg){
-    //console.log('message: ' + msg);
+    
     control = msg;
-    console.log('Update from server rxd');
-    console.log('-----------------------------');
+    logger.log('socket','Update from web rxd.');
     control.warning.length = 0;
     //for (var i = 0, len = control.warning.length; i < len; i++) 
     //{
@@ -295,10 +359,8 @@ io.on('connection', function(socket){
   });
 
   socket.on('setup', function(msg){
-    //console.log('message: ' + msg);
     control = msg;
-    console.log('Setup function called!');
-    console.log('-----------------------------');
+    logger.log('socket','Setup function called!');
     control.warning.length = 0;
     //for (var i = 0, len = control.warning.length; i < len; i++) 
     //{
@@ -318,101 +380,261 @@ io.on('connection', function(socket){
 });
 
 io.on('disconnect', function(socket){
-  console.log('a user disconnected');
-  console.log('-----------------------------');
+  logger.log('socket','User disconnected.');
+  
 });
 
 function TankCheck() 
 {
-  console.log('Firing TankCheck.');
-  console.log('-----------------------------');
   //On 0 minutes 0 seconds do a check of the system
   current_time = new Date();
+
+  //check to see if a new logfile needs to be created
+  var check_month = (current_time.getMonth() + 1);
+  var check_day = current_time.getDate();
+  var check_year = current_time.getFullYear();
+  var datechanged = 0;
+
+  logger.log('tankcheck',"Current time: " + current_time.getHours() + ":" + current_time.getMinutes());
+  
+
+  if (check_month != current_month)
+    datechanged = 1;
+  if (check_day != current_day)
+    datechanged = 1;
+  if (check_year != current_year)
+    datechanged = 1;
+
+  if (datechanged == 1)
+  {
+    current_month = check_month;
+    current_day = check_day;
+    current_year = check_year;
+    
+    logger.remove(logger.transports.File);
+    logfile = current_month + "-" + current_day + "-" + current_year + ".log";
+    logger.add(logger.transports.File, { filename: logfile });
+
+    var timestamp = current_time.getFullYear() + "-" + current_time.getDate() + "-" + current_time.getFullYear() + " @ " + current_time.getHours() + ":" + current_time.getMinutes();
+    logger.log('logger','New log file started.');
+    
+
+  }
+
+
+  
+
+  
+
+
+  //if in setup mode, do not check anything
+  if (control.setup == 1)
+    return;
+
+    logger.log('tankcheck','Firing TankCheck');
+    
   //console.log('Time within loop: ' + current_time);
 
   //On the hour do a check of the schedule
   if ((current_time.getMinutes() == 0) && (current_time.getSeconds() <= 9))
   {
-    console.log('TankCheck: Checking schedule on the hour.');
+    logger.log('tankcheck','Checking schedule on the hour.');
     ScheduleCheck();
   }
 
   //On 30 minutes 0 seconds do a check of the system
   if ((current_time.getMinutes() == 43) && (current_time.getSeconds() <= 9))
   {
-    console.log('TankCheck: Checking schedule on the 43rd minute.');
+    logger.log('tankcheck','Checking schedule on the 43rd minute.');
     ScheduleCheck();
   }
 
   //Every minute read the sensors
   //if (current_time.getSeconds() <= 9)
   //{
-    console.log('TankCheck: Checking sensors on the minute.');
+    logger.log('tankcheck','Checking sensors on the minute.');
     SensorCheck();
     TriggerCheck();
     WarningCheck();
   //}
 
-  console.log('Completed TankCheck.');
-  console.log('-----------------------------');
+  logger.log('tankcheck','TankCheck Completed.');
+  
 }
 
 //Every 10 minutes save the settings to file
 function SaveSettings()
 {
-  console.log('Saving setup.json settings...');
+  logger.log('save','Saving setup.json settings.');
     fs.writeFile('setup.json', JSON.stringify(control), function (err) {
       if (err) throw err;
     });
-    console.log('Save complete.');
-    console.log('-----------------------------');
+    logger.log('save','Save complete.');
+    
+}
+
+//only called on first run, sets everything up
+function Setup_Server()
+{
+  //setup tankcheck interval
+  //Setup interval functions that run on set times.
+  //600,000 = ten minutes
+  //1000 = 1 second
+  setInterval(TankCheck, 10000);
+  setInterval(SaveSettings, 600000);
+
+  //start with sensors interval
+  if (control.sensor[0].status == "Enabled")
+  {
+    //convert interval to ms
+    var checktime = control.sensor[0].interval * 1000;
+    //set interval timer
+    const sensorInterval0 = setInterval(SensorCheck(0), checktime);
+  }
+  if (control.sensor[1].status == "Enabled")
+  {
+    //convert interval to ms
+    var checktime = control.sensor[1].interval * 1000;
+    //set interval timer
+    const sensorInterval1 = setInterval(SensorCheck(0), checktime);
+  }
+  if (control.sensor[2].status == "Enabled")
+  {
+    //convert interval to ms
+    var checktime = control.sensor[2].interval * 1000;
+    //set interval timer
+    const sensorInterval2 = setInterval(SensorCheck(0), checktime);
+  }
+  if (control.sensor[3].status == "Enabled")
+  {
+    //convert interval to ms
+    var checktime = control.sensor[3].interval * 1000;
+    //set interval timer
+    const sensorInterval3 = setInterval(SensorCheck(0), checktime);
+  }
+}
+
+function ChangeSensors()
+{
+  if (sensorInterval0 != NULL)
+    clearInterval(sensorInterval0);
+  if (sensorInterval1 != NULL)
+    clearInterval(sensorInterval1);
+  if (sensorInterval2 != NULL)
+    clearInterval(sensorInterval2);
+  if (sensorInterval3 != NULL)
+    clearInterval(sensorInterval3);
+
+    if (control.sensor[0].status == "Enabled")
+    {
+      //convert interval to ms
+      var checktime = control.sensor[0].interval * 1000;
+      //set interval timer
+      const sensorInterval0 = setInterval(SensorCheck(0), checktime);
+    }
+    if (control.sensor[1].status == "Enabled")
+    {
+      //convert interval to ms
+      var checktime = control.sensor[1].interval * 1000;
+      //set interval timer
+      const sensorInterval1 = setInterval(SensorCheck(1), checktime);
+    }
+    if (control.sensor[2].status == "Enabled")
+    {
+      //convert interval to ms
+      var checktime = control.sensor[2].interval * 1000;
+      //set interval timer
+      const sensorInterval2 = setInterval(SensorCheck(2), checktime);
+    }
+    if (control.sensor[3].status == "Enabled")
+    {
+      //convert interval to ms
+      var checktime = control.sensor[3].interval * 1000;
+      //set interval timer
+      const sensorInterval3 = setInterval(SensorCheck(3), checktime);
+    }
+}
+
+function SensorCheck(sensor2read)
+{
+  //read the sensor
+  logger.log('sensorcheck','Reading sensor #: ' + sensor2read);
+  
 }
 
 function TriggerCheck()
 {
-  if (control.outlet[0].trigger == "sensor")
+  for (var routlet = 0; routlet < 6; routlet++)
   {
-    //compare low trigger value against data
-    /*
-    if (control.sensor[control.outlet[0].triggersensor].data < control.sensor[control.outlet[0].triggersensor].lowtrigger)
+    if ((control.outlet[routlet].trigger == "sensor") && (control.outlet[routlet].status == "Enabled"))
     {
-      var msg = control.sensor[control.outlet[0].triggersensor].name + " is reporting " + control.sensor[control.outlet[0].triggersensor].datatype + " is too low!";
-      var type = 1;
-      var exists = false;
-      for (var i = 0, len = control.warning.length; i < len; i++) {
-        if (control.warning[i].type == type)
-          exists = true;
-      }
-      if (exists == false)
-        control.warning.push(msg, type);
-      
-    }
+      //compare low trigger value against data
+      if (control.sensor[control.outlet[routlet].triggersensor].data < control.sensor[control.outlet[routlet].triggersensor].lowtrigger)
+      {
+        //var msg = control.sensor[control.outlet[0].triggersensor].name + " is reporting " + control.sensor[control.outlet[0].triggersensor].datatype + " is too low!";
+        //var type = 1;
+        //var exists = false;
+        //for (var i = 0, len = control.warning.length; i < len; i++) {
+         // if (control.warning[i].type == type)
+          //  exists = true;
+        //}
+        //if (exists == false)
+         // control.warning.push(msg, type);
+        
+         //run the device for the specified time period
 
-    //compare high trigger value against data
-    if (control.sensor[control.outlet[0].triggersensor].data > control.sensor[control.outlet[0].triggersensor].hightrigger)
-    {
-      var msg = control.sensor[control.outlet[0].triggersensor].name + " is reporting " + control.sensor[control.outlet[0].triggersensor].datatype + " is too high!";
-      var type = 2;
-      var exists = false;
-      for (var i = 0, len = control.warning.length; i < len; i++) {
-        if (control.warning[i].type == type)
-          exists = true;
+         //log the incident using winston
+
+
+
       }
-      if (exists == false)
-        control.warning.push(msg, type);
+
+      //compare high trigger value against data
+      if (control.sensor[control.outlet[routlet].triggersensor].data > control.sensor[control.outlet[routlet].triggersensor].hightrigger)
+      {
+        //var msg = control.sensor[control.outlet[0].triggersensor].name + " is reporting " + control.sensor[control.outlet[0].triggersensor].datatype + " is too high!";
+        //var type = 2;
+        //var exists = false;
+        //for (var i = 0, len = control.warning.length; i < len; i++) {
+            //          if (control.warning[i].type == type)
+            //exists = true;
+        //}
+        //if (exists == false)
+          //          control.warning.push(msg, type);
+        
+          //run the device for the specified time period
+
+          //log the incident using winston
+
+
+
+      }
       
     }
-    */
   }
 }
 
 function ScheduleCheck()
 {
-  console.log('Verifying schedule...');
-  var changesmade = false;
+  logger.log('schedulecheck','Verifying schedule.');
+  
+  global.current_time = new Date();
+  var hour = current_time.getHours();
+  //console.log("Current time: " + current_time.getHours() + ":" + current_time.getMinutes());
 
   //check outlet 1
   //update control
+  if (control.outlet[0].sched[hour] == 1)
+  {
+    //if the pin isn't already on, turn it on
+    control.outlet[0].state = 1;
+  }
+  if (control.outlet[0].sched[hour] == 0)
+  {
+    //if the pin isn't already off, turn it off
+    control.outlet[0].state = 0;
+  }
+
 
   //check outlet 2
   //update control
@@ -431,63 +653,79 @@ function ScheduleCheck()
 
   //if a change in outlet conditions has occurred then update the web
   
-  console.log('Schedule check complete.');
-  console.log('-----------------------------');
+  logger.log('schedulecheck','Schedule check complete.');
+  
+}
+
+function PlaySound()
+{
+  if (control.sound == 0)
+    return;
+
+  //play a two second beep
+
+
 
 }
 
 function WarningCheck()
 {
-  console.log('Checking for warning conditions.');
-
+  logger.log('warningcheck','Checking for warning conditions.');
+  
   //check if filter has stopped working
 
-  //check if temperature is too low
-  if (control.sensor[0].data < control.sensor[0].lowtrigger)
+  //check if sensor data is too low
+  for (var rsensor = 0; rsensor < 4; rsensor++)
+  {
+    if (control.sensor[rsensor].status == "Enabled")
     {
-      var msg = control.sensor[0].name + " is reporting " + control.sensor[0].datatype + " is too low!";
-      var temp = new Object();
-      temp["text"] = msg;
-      temp["type"] = 1;
-      var exists = false;
-      for (var i = 0, len = control.warning.length; i < len; i++) {
-        if (control.warning[i].type == temp.type)
-          exists = true;
-      }
-      if (exists == false)
-        control.warning.push(temp);
-      
-    }
+      if (control.sensor[rsensor].data < control.sensor[rsensor].lowtrigger)
+        {
+          var msg = control.sensor[rsensor].name + " is reporting " + control.sensor[rsensor].datatype + " is too low!";
+          var temp = new Object();
+          temp["text"] = msg;
+          temp["type"] = 1;
+          var exists = false;
+          for (var i = 0, len = control.warning.length; i < len; i++) {
+            if (control.warning[i].type == temp.type)
+              exists = true;
+          }
+          if (exists == false)
+            control.warning.push(temp);
+            
+        }
 
-    //check if temperature is too high
-    if (control.sensor[0].data > control.sensor[0].hightrigger)
-    {
-      var msg = control.sensor[0].name + " is reporting " + control.sensor[0].datatype + " is too high!";
-      var type = 2;
-      var temp = new Object();
-      temp["text"] = msg;
-      temp["type"] = 2;
-      var exists = false;
-      for (var i = 0, len = control.warning.length; i < len; i++) {
-        if (control.warning[i].type == temp.type)
-          exists = true;
+        //check if first sensor data is too high
+        if (control.sensor[rsensor].data > control.sensor[rsensor].hightrigger)
+        {
+          var msg = control.sensor[rsensor].name + " is reporting " + control.sensor[rsensor].datatype + " is too high!";
+          var type = 2;
+          var temp = new Object();
+          temp["text"] = msg;
+          temp["type"] = 2;
+          var exists = false;
+          for (var i = 0, len = control.warning.length; i < len; i++) {
+            if (control.warning[i].type == temp.type)
+              exists = true;
+          }
+          if (exists == false)
+            control.warning.push(temp);
+            
+        }
       }
-      if (exists == false)
-        control.warning.push(temp);
-      
-    }
+  }
 
   
 
   //update warnings and send to website
 
-  console.log('Warning check complete.');
-  console.log('-----------------------------');
+  logger.log('warningcheck','Warning check complete.');
+  
 }
 
 function SensorCheck()
 {
-  console.log('Reading sensors...');
+  logger.log('sensorcheck','Reading sensors.');
   //check sensor 1
   if (control.sensor[0].status == "Enabled")
   {
@@ -513,23 +751,19 @@ function SensorCheck()
     //read data
   }
 
-  console.log('Sensor check complete.');
-  console.log('-----------------------------');
+  logger.log('sensorcheck','Sensor check complete.');
+  
 }
 
 
 
-//Setup interval functions that run on set times.
-//600,000 = ten minutes
-//1000 = 1 second
-setInterval(TankCheck, 10000);
-setInterval(SaveSettings, 600000);
+
 
 
 
 http.listen(port, function(){
-  console.log('Aqua Control listening on: ' + port);
-  console.log('-----------------------------');
+  logger.log('server','Aqua Control listening on: ' + port);
+  
 });
 
 module.exports = app;
