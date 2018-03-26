@@ -5,25 +5,24 @@ Temperature sensor:
 	Yellow: DATA
 	One 4.7k resistor between VDD+ and DATA
 	
-Pin #30 : Outlet: heater
-Pin #31 : Outlet: Lights 1 (led)
-Pin #32 : Outlet: Lights 2 (plant bulb)
-NOT USED: Pin #33 : Outlet: Lights 3 (spot)
-Pin #34 : Outlet: fertilizer dispenser
-Pin #35 : Outlet: filter
-Pin #37 : Outlet 1 LED
-Pin #38 : Outlet 2 LED
-Pin #39 : Outlet 3 LED
-Pin #40 : Outlet 4 LED
-Pin #41 : Outlet 5 LED
-NOT USED: Pin #42 : Outlet 6 LED
-Pin #43 : General Power LED
-Pin #44 : Maintenance Mode LED
-Pin #45 : Maintenance Mode Button
-Pin #46 : Sensor 1: temperature (3pin) DS18B20
-Pin #47 : Sensor 1:
-Pin #48 : Sensor 1:
-Pin #49 : Sensor 1:
+1 - Pin # : Outlet: heater
+2 - Pin # : Outlet: Lights 1 (led)
+3 - Pin # : Outlet: Lights 2 (plant bulb)
+4 - Pin # : Outlet: fertilizer dispenser
+5 - Pin # : Outlet: filter
+6 - Pin # : Outlet 1 LED
+7 - Pin # : Outlet 2 LED
+8 - Pin # : Outlet 3 LED
+9 - Pin # : Outlet 4 LED
+10 - Pin # : Outlet 5 LED
+
+11 - Pin # : General Power LED
+12 - Pin # : Maintenance Mode LED
+13 - Pin # : Maintenance Mode Button
+14 - Pin # : Sensor 1: temperature (3pin) DS18B20
+15 - Pin # : Sensor 1:
+16 - Pin # : Sensor 1:
+17 - Pin # : Sensor 1:
 
 30-37
 31-38
@@ -172,7 +171,7 @@ Server:
 	DONE - Add sound controller function.
 		DONE - If sound is enabled, controller should beep when warnings are present.
 	Server reads sensors from pins.
-	Server logs warnings based on triggers.
+	DONE - Server logs warnings based on triggers.
 	DONE - Server monitors outlets based on triggers.
 		Add code to turn on/off physical devices.
 	DONE - Server checks for existing CFG file, if not found directs first website visit to configuration.
@@ -180,11 +179,13 @@ Server:
 		If not successful, prompt user to resubmit or do the configuration.
 	DONE - Reset function should delete the config file and set the setup variable to 'on'.
 	Add config file loading from website.
-	Add logging to file.
-	Add debug setting.
+	DONE - Add logging to file.
+	DONE - Add debug setting.
 		If on, console.logs are executed.
 		If off, no console.logs.
-	Add winston logging to file of key functions.
+	DONE - Add winston logging to file of key functions.
+
+	Are SensorCheck and SensorRead both necessary?
 
 
 
@@ -192,5 +193,23 @@ Server:
 
 
 
+//EXAMPLE CODE FOR USING DS18B20 TEMP SENSOR ON PI
+var ds18b20 = require('ds18b20');
+ds18b20.sensors(function(err, ids) {
+  // got sensor IDs ...
+});
 
+// ... async call
+ds18b20.temperature('10-00080283a977', function(err, value) {
+  console.log('Current temperature is', value);
+});
 
+// ... or sync call
+console.log('Current temperature is' + ds18b20.temperatureSync('10-00080283a977'));
+
+// default parser is the decimal one. You can use the hex one by setting an option
+ds18b20.temperature('10-00080283a977', {parser: 'hex'}, function(err, value) {
+  console.log('Current temperature is', value);
+});
+
+console.log('Current temperature is' + ds18b20.temperatureSync('10-00080283a977', {parser: 'hex'}));
