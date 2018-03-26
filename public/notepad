@@ -24,3 +24,28 @@ document.getElementById("2hour1").checked = control.outlet[0].sched[1];
             document.getElementById("2hour23").checked = control.outlet[0].sched[23];
             
 
+
+
+Configuring the JSCS Linter
+
+The best way to configure how the linter flags issues in your code is to create a .jscsrc file in the root of your workspace. The VS Code JSCS Linter will look for this file first and if no .jscsrc file is found it will look into your custom Settings.
+
+Here are the available settings options:
+
+Enable or disable the JSCS Linter for JavaScript files in this workspace.
+
+"jscs.enable": boolean
+The JSCS preset to use, possible values: airbnb, crockford, google, grunt, idiomatic, jquery, mdcs, node-style-guide, wikimedia, wordpress, yandex.
+
+"jscs.preset": string
+Disable the JSCS Linter if no .jscsrc configuration file is found, default is false.
+
+"jscs.disableIfNoConfig": boolean
+Set JSCS configuration rules in your settings file directly.
+
+"jscs.configuration": object
+Development
+
+The JSCS Linter is a great way to learn how to create extensions for VS Code. We also love enhancements and bug fixes! To get started, clone the repo and check out the README.md for more details
+
+Enjoy!

@@ -57,7 +57,6 @@ var current_time = new Date();
 var current_month = (current_time.getMonth() + 1);
 var current_day = current_time.getDate();
 var current_year = current_time.getFullYear();
-console.log('Current time: ' + current_time.getHours() + ':' + current_time.getMinutes());
 
 var logfile = current_month + '-' + current_day + '-' + current_year + '.log';
 
@@ -100,6 +99,7 @@ var logger = new (winston.Logger)({
 });
 //logger.add(logger.transports.Console);
 
+logger.log('timestamp', 'Current time: ' + current_time.getHours() + ':' + current_time.getMinutes());
 logger.log('info', 'Logger started.');
 
 
@@ -217,12 +217,12 @@ var default_config = control;
 //Save the config file - REMOVE IN DEPLOYMENT!
 var savefile = 0;
 if (savefile === 1) {
-    console.log('Creating setup.json.');
+    logger.log('file', 'Creating setup.json.');
     fs.writeFileSync('setup.json', JSON.stringify(control), function (err) {
         if (err) throw err;
-        console.log('Error: ' + err);
+        logger.log('error', 'Error: ' + err);
     });
-    console.log('INI Saved!');
+    logger.log('file','INI Saved!');
 }
 
 //Load the config file
