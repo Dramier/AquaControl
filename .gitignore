@@ -58,6 +58,6 @@ typings/
 .env
 
 # notes and documentation for development
-Clippings/
-Notes/
+Clippings/*
+Notes/*
 
