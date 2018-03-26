@@ -53,6 +53,39 @@ var port = 3000;
 //    type - 0 - none, 1 - temp low, 2 - temp high, 3 through 8 - outlet 1 to 6 failure, 9 through 12 - sensor 1 to 4 failure
 //    status - disabled, enabled, ignored
 
+var myCustomLevels = {
+    levels: {
+        timestamp: 0,
+        info: 1,
+        file: 2,
+        error: 3,
+        server: 4,
+        url: 5,
+        socket: 6,
+        tankcheck: 7,
+        logger: 8,
+        save: 9,
+        sensorcheck: 10,
+        schedulecheck: 11,
+        warningcheck: 12
+    },
+    colors: {
+        timestamp: 'white',
+        info: 'white',
+        file: 'yellow',
+        error: 'red',
+        server: 'green',
+        url: 'yellow',
+        socket: 'yellow',
+        tankcheck: 'blue',
+        logger: 'yellow',
+        save: 'yellow',
+        sensorcheck: 'blue',
+        schedulecheck: 'blue',
+        warningcheck: 'blue'
+    }
+};
+
 var current_time = new Date();
 var current_month = (current_time.getMonth() + 1);
 var current_day = current_time.getDate();
@@ -63,10 +96,13 @@ var logfile = current_month + '-' + current_day + '-' + current_year + '.log';
 var winston = require('winston');
 //logger.add(logger.transports.File, { filename: logfile });
 
+winston.addColors(myCustomLevels);
+
 //var config = winston.config;
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
+            level: 'silly',
             timestamp: function () {
                 return Date.now();
             },
@@ -81,6 +117,8 @@ var logger = new (winston.Logger)({
             }
         }),
         new (winston.transports.File)({
+            json: true,
+            level: 'silly',
             filename: logfile,
             timestamp: function () {
                 return Date.now();
@@ -97,10 +135,18 @@ var logger = new (winston.Logger)({
         })
     ]
 });
+
+var t = new winston.transporters.Webhook({
+    host: 'localhost',
+    port: 3000,
+    path: '/log',
+    level: 'silly',
+    colorize: true
+  });
 //logger.add(logger.transports.Console);
 
-logger.log('timestamp', 'Current time: ' + current_time.getHours() + ':' + current_time.getMinutes());
-logger.log('info', 'Logger started.');
+logger.info('Current time: ' + current_time.getHours() + ':' + current_time.getMinutes());
+logger.info('Logger started.');
 
 
 //winston.add(winston.transports.File, { filename: logfile });
@@ -217,57 +263,55 @@ var default_config = control;
 //Save the config file - REMOVE IN DEPLOYMENT!
 var savefile = 0;
 if (savefile === 1) {
-    logger.log('file', 'Creating setup.json.');
+    logger.info('Creating setup.json.');
     fs.writeFileSync('setup.json', JSON.stringify(control), function (err) {
         if (err) throw err;
-        logger.log('error', 'Error: ' + err);
+        logger.error('Error: ' + err);
     });
-    logger.log('file','INI Saved!');
+    logger.info('INI Saved!');
 }
 
 //Load the config file
-logger.log('server', 'Aqua Control booting...');
-//console.log('-----------------------------');
-//console.log('');
-//console.log('-----------------------------');
+logger.verbose('Aqua Control booting...');
 
 
 
 try {
     var config_file = require('./setup.json');
+    control = config_file;
 }
 
 catch (error) {
-    logger.log('error', error);
+    logger.error(error);
 
     control = default_config;
 }
 
 if (control.setup != 1) {
-    control = config_file;
-    logger.log('server', 'Config loaded.');
+    //control = config_file;
+    logger.verbose('Config loaded.');
 
 }
 else {
-    logger.log('error', 'Config not found.  Defaulting to Setup.');
+    logger.error('Config not found.  Defaulting to Setup.');
 
 }
 
 control.uptime = current_time;
 
-logger.log('server', 'Server started.');
+logger.verbose('Server started.');
 
 
 for (var i in control.outlet) {
-    logger.log('server', 'Outlet #' + i + ' Name: ' + control.outlet[i].name);
-    //console.log("Outlet #" + i + " Name: " + control.outlet[i].name);
+    logger.verbose('Outlet #' + i + ' Name: ' + control.outlet[i].name);
+    
 }
 
 
 
 for (var j in control.sensor) {
-    logger.log('server', 'Sensor #' + j + ' Name: ' + control.sensor[j].name);
-    //console.log("Sensor #" + i + " Name: " + control.sensor[i].name);
+    logger.verbose('Sensor #' + j + ' Name: ' + control.sensor[j].name);
+    
 }
 
 
@@ -284,29 +328,29 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 
 app.get('/', function (req, res) {
-    logger.log('url', 'URL base: Incoming connection.');
+    logger.verbose('URL base: Incoming connection.');
     res.sendFile(__dirname + '/public/home.htm');
 
 });
 
 app.get('/pc', function (req, res) {
-    logger.log('url', 'URL pc: Incoming connection.');
+    logger.verbose('URL pc: Incoming connection.');
 
     res.sendFile(__dirname + '/public/homepc.htm');
 });
 
 app.get('/setup', function (req, res) {
-    logger.log('url', 'URL setup: Incoming connection.');
+    logger.verbose('URL setup: Incoming connection.');
 
     res.sendFile(__dirname + '/public/setup.htm');
 });
 
 io.on('connection', function (socket) {
-    logger.log('socket', 'User connected.');
+    logger.verbose('User connected.');
     io.emit('control update', control);
 
     socket.on('update', function () {
-        logger.log('socket', 'Control update.');
+        logger.verbose('Control update.');
         socket.emit('control update', control);
         if (control.warning.length > 0)
             PlaySound();
@@ -320,7 +364,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('reset', function () {
-        logger.log('socket', 'Reset requested.');
+        logger.verbose('Reset requested.');
         control = default_config;
         ChangeSensors();
         SaveSettings();
@@ -337,14 +381,14 @@ io.on('connection', function (socket) {
         //}
         control.warning = [{ 'text': 'none', 'type': 0 }];
 
-        logger.log('socket', 'Reset completed.');
+        logger.verbose('Reset completed.');
 
     });
 
     socket.on('control update', function (msg) {
 
         control = msg;
-        logger.log('socket', 'Update from web rxd.');
+        logger.verbose('Update from web rxd.');
         control.warning.length = 0;
         //for (var i = 0, len = control.warning.length; i < len; i++) 
         //{
@@ -356,7 +400,7 @@ io.on('connection', function (socket) {
 
     socket.on('setup', function (msg) {
         control = msg;
-        logger.log('socket', 'Setup function called!');
+        logger.verbose('Setup function called!');
         control.warning.length = 0;
         //for (var i = 0, len = control.warning.length; i < len; i++) 
         //{
@@ -367,6 +411,7 @@ io.on('connection', function (socket) {
         //make sure all GPIO pins get turned off
         //clear the control to defaults
         control = default_config;
+        SaveSettings();
     //delete the config file
 
     //socket.emit('control update', control);
@@ -376,7 +421,7 @@ io.on('connection', function (socket) {
 });
 
 io.on('disconnect', function () {
-    logger.log('socket', 'User disconnected.');
+    logger.verbose('User disconnected.');
 
 });
 
@@ -390,7 +435,7 @@ function TankCheck() {
     var check_year = current_time.getFullYear();
     var datechanged = 0;
 
-    logger.log('tankcheck', 'Current time: ' + current_time.getHours() + ':' + current_time.getMinutes());
+    logger.debug('Current time: ' + current_time.getHours() + ':' + current_time.getMinutes());
 
 
     if (check_month != current_month)
@@ -410,7 +455,7 @@ function TankCheck() {
         logger.add(logger.transports.File, { filename: logfile });
 
         //var timestamp = current_time.getFullYear() + '-' + current_time.getDate() + '-' + current_time.getFullYear() + ' @ ' + current_time.getHours() + ':' + current_time.getMinutes();
-        logger.log('logger', 'New log file started.');
+        logger.info('New log file started.');
 
 
     }
@@ -425,42 +470,42 @@ function TankCheck() {
     if (control.setup == 1)
         return;
 
-    logger.log('tankcheck', 'Firing TankCheck');
+    logger.debug('Firing TankCheck');
 
-    //console.log('Time within loop: ' + current_time);
+    
 
     //On the hour do a check of the schedule
     if ((current_time.getMinutes() == 0) && (current_time.getSeconds() <= 9)) {
-        logger.log('tankcheck', 'Checking schedule on the hour.');
+        logger.debug('Checking schedule on the hour.');
         ScheduleCheck();
     }
 
     //On 30 minutes 0 seconds do a check of the system
     if ((current_time.getMinutes() == 43) && (current_time.getSeconds() <= 9)) {
-        logger.log('tankcheck', 'Checking schedule on the 43rd minute.');
+        logger.debug('Checking schedule on the 43rd minute.');
         ScheduleCheck();
     }
 
     //Every minute read the sensors
     //if (current_time.getSeconds() <= 9)
     //{
-    logger.log('tankcheck', 'Checking sensors on the minute.');
+    logger.debug('Checking sensors on the minute.');
     SensorRead();
     TriggerCheck();
     WarningCheck();
     //}
 
-    logger.log('tankcheck', 'TankCheck Completed.');
+    logger.debug('TankCheck Completed.');
 
 }
 
 //Every 10 minutes save the settings to file
 function SaveSettings() {
-    logger.log('save', 'Saving setup.json settings.');
+    logger.info('Saving setup.json settings.');
     fs.writeFile('setup.json', JSON.stringify(control), function (err) {
         if (err) throw err;
     });
-    logger.log('save', 'Save complete.');
+    logger.info('Save complete.');
 
 }
 
@@ -538,7 +583,7 @@ function ChangeSensors() {
 
 function SensorCheck(sensor2read) {
     //read the sensor
-    logger.log('sensorcheck', 'Reading sensor #: ' + sensor2read);
+    logger.debug('Reading sensor #: ' + sensor2read);
 
 }
 
@@ -590,11 +635,11 @@ function TriggerCheck() {
 }
 
 function ScheduleCheck() {
-    logger.log('schedulecheck', 'Verifying schedule.');
+    logger.debug('Verifying schedule.');
 
     global.current_time = new Date();
     var hour = current_time.getHours();
-    //console.log("Current time: " + current_time.getHours() + ":" + current_time.getMinutes());
+    
 
     //check outlet 1
     //update control
@@ -625,7 +670,7 @@ function ScheduleCheck() {
 
     //if a change in outlet conditions has occurred then update the web
 
-    logger.log('schedulecheck', 'Schedule check complete.');
+    logger.debug('Schedule check complete.');
 
 }
 
@@ -640,7 +685,7 @@ function PlaySound() {
 }
 
 function WarningCheck() {
-    logger.log('warningcheck', 'Checking for warning conditions.');
+    logger.debug('Checking for warning conditions.');
 
     //check if filter has stopped working
 
@@ -684,12 +729,12 @@ function WarningCheck() {
 
     //update warnings and send to website
 
-    logger.log('warningcheck', 'Warning check complete.');
+    logger.debug('Warning check complete.');
 
 }
 
 function SensorRead() {
-    logger.log('sensorcheck', 'Reading sensors.');
+    logger.debug('Reading sensors.');
     //check sensor 1
     if (control.sensor[0].status == 'Enabled') {
     //read data
@@ -711,7 +756,7 @@ function SensorRead() {
     //read data
     }
 
-    logger.log('sensorcheck', 'Sensor check complete.');
+    logger.debug('Sensor check complete.');
 
 }
 
@@ -722,7 +767,7 @@ function SensorRead() {
 
 
 http.listen(port, function () {
-    logger.log('server', 'Aqua Control listening on: ' + port);
+    logger.verbose('Aqua Control listening on: ' + port);
 
 });
 
