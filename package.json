@@ -1,7 +1,8 @@
 {
   "name": "aquarium-controller",
   "description": "Controller for Pi to handle aquarium tasks.",
-  "version": "1.0.0",
+  "author": "Rory McGuire",
+  "version": "1.7.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -30,9 +31,21 @@
     "path": "^0.12.7",
     "request": "^2.83.0",
     "socket.io": "^2.0.4",
-    "winston": "^2.4.1",
-    "xmlhttprequest": "^1.8.0"
+    "winston": "^2.4.1"
   },
+  "bundledDependencies": [
+    "body-parser",
+    "dotenv",
+    "ds18b20",
+    "express",
+    "logform",
+    "net",
+    "node-env-file",
+    "onoff",
+    "path",
+    "request",
+    "socket.io",
+    "winston"],
   "devDependencies": {
     "eslint": "^2.8.0"
   },

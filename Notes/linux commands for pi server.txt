@@ -23,3 +23,4 @@ git pull
 
 startup programs:
 put the command in /etc/rc.local
+    commands in this file must have an "&" with no quotes at the end to make sure boot finishes
